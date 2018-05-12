@@ -50,10 +50,9 @@ const session = require('./routes/lib/session');
 const fragments = require('./routes/fragments');
 const index = require('./routes/index');
 const login = require('./routes/login');
-const puzzle = require('./routes/puzzle');
 
-const apiDocuments = require('./routes/api/documents');
 const apiUsers = require('./routes/api/users');
+const apiPuzzle = require('./routes/api/puzzle');
 
 const app = express();
 
@@ -110,11 +109,10 @@ app.use(function(req, res, next) {
 // The application's pages...
 app.use('/', index);
 app.use('/login', login);
-app.use('/puzzle', puzzle);
 
 // The application's API handlers...
-app.use('/api/documents', apiDocuments);
 app.use('/api/users', apiUsers);
+app.use('/api/puzzle', apiPuzzle);
 
 // The application's fragments...
 app.use('/fragments', fragments);

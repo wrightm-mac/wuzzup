@@ -33,52 +33,96 @@
 ----------------------------------------------------------------------------- */
 
 const router = require('express').Router();
-
 const helper = require('../lib/helper');
-
-const cv = require('../models/cv');
+const puzzle = require('../models/puzzle');
 
 
 /**
-  Gets all cv.
+  Gets all puzzles.
 */
 router.get('/', function(req, res, next) {
-    cv.model.find(helper.responder(res));
+  puzzle.model.find()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(500);
+      res.send({
+        status: 500,
+        message: "something has gone wrong"
+      });
+    });
 });
 
 /**
-  Gets a cv for an identified user.
+  Gets an identified puzzle.
 
-  :id - user's identifier.
+  :id - puzzle's identifier.
 */
-router.get('/:id', (req, res) => {
-    cv.model.findById(req.params.id, helper.responder(res, (data) => {
-        if (!data) {
-            res.status(404);
-        }
-    }));
+router.get('/:hash', (req, res) => {
+  puzzle.model.find({hash: req.params.hash})
+    .then(data => {
+      if (data && data.length) {
+        res.send(data[0]);
+      }
+      else {
+        res.status(404);
+        res.send({
+          status: "404",
+          message: "not found"
+        });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(500);
+      res.send({
+        status: 500,
+        message: "something has gone wrong"
+      });
+    });
 });
 
 /**
-  Adds a new user.
+  Adds a new puzzle.
 */
 router.post('/', (req, res) => {
+  let data = req.body;
+  data.email = req.session.user.email;
+  data.hash = helper.id();
+
+  const record = new puzzle.model(data);
+  record.save()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(500);
+      res.send({
+        status: 500,
+        message: "something has gone wrong"
+      });
+    });
 });
 
 /**
-  Updates an identified user.
+  Updates an identified puzzle.
 
-  :id - user's identifier.
+  :id - puzzle's identifier.
 */
 router.put('/:id', (req, res) => {
+  //puzzle.model.findByIdAndUpdate(req.params.id, req.body, helper.responder(res));
 });
 
 /**
-  Deletes an identified user.
+  Deletes an identified puzzle.
 
-  :id - user's identifier.
+  :id - puzzle's identifier.
 */
 router.delete('/:id', (req, res) => {
+  // puzzle.model.findByIdAndRemove(req.params.id, helper.responder(res));
 });
 
 module.exports = router;
