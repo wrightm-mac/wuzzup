@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  script(src="/scripts/admin.js")
+
+  dl.adminSection
+    dt(data-section='users') Users
+    dd(data-section='users')
+      table.adminTable
+        thead
+          tr
+            th.adminTableHeader ID
+            th.adminTableHeader Email
+            th.adminTableHeader Roles
+            th.adminTableHeaderBlank
+
+    dt(data-section='documents') Documents
+    dd(data-section='documents')
+      table.adminTable
+        thead
+          tr
+            th.adminTableHeader ID
+            th.adminTableHeader Email
+            th.adminTableHeaderBlank

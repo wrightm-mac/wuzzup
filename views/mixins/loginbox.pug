@@ -1,0 +1,54 @@
+mixin loginbox
+    div#login-box
+        input.standard-input(type="email", id="login-email", name="email", placeholder="email", autofocus)
+        input.standard-input(type="password", id="login-password", name="password", placeholder="password")
+        div.login-box-buttons
+            div#login-ok.standard-button
+                | Login
+            div#login-cancel.standard-button
+                | Cancel
+        div.login-registration-text
+            | Don't have an account?
+            br
+            div#login-register
+                | register
+
+    script.
+        $(function() {
+            let $loginbox = $("#login-box");
+            $("#login-bubble").click(function() {
+              $loginbox.toggle();
+            });
+
+            $("#login-ok").click(function() {
+                let email = $("#login-email", $loginbox).val();
+                let password = $("#login-password", $loginbox).val();
+
+                console.log("login [email=%s][password=%s]", email, password);
+
+                $.ajax({
+                    url: "/login",
+                    method: "POST",
+                    data: {
+                        email: email,
+                        password: password
+                    }
+                })
+                .done((data) => {
+                    console.log("login [response-data=%o]", data, status);
+                    $.redirect("/");
+                })
+                .catch(error => {
+                    console.error("login: error [status-code=%d][message=%o]", error.status, error.statusText);
+                    $("input", $loginbox).addClass("badInput");
+                });
+            });
+
+            $("#login-cancel").click(function() {
+                $loginbox.fadeOut();
+            });
+
+            $("#login-register").click(function() {
+                $("#registration-box").fadeIn();
+            });
+        });

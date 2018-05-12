@@ -1,0 +1,194 @@
+/*
+
+
+
+
+*/
+
+@import "theme.less";
+
+
+.standard-clickable, .standard-button {
+  cursor: pointer;
+}
+
+.standard-button {
+  display: inline-block;
+  cursor: pointer;
+  width: 100px;
+  height: 35px;
+  font-size: 12pt;
+  font-weight: bold;
+  border-radius: @site-border-radius;
+  color: @control-backcolor;
+  background-color: @control-color;
+  margin: 5px 2px 5px 2px;
+  padding: 0 8px 0 8px;
+  text-align: center;
+}
+
+.standard-button + .standard-button {
+  margin-left: 10px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+.standard-input {
+  font-size: 110%;
+  width: 100%;
+  // margin: 4px 3px 0 3px;
+  padding: 2px;
+  background-color: #fdfd96;
+  border-color: lightgrey;
+  border-radius: @site-border-radius;
+  border-style: solid;
+}
+
+.standard-input + .standard-input {
+  margin-top: 8px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+.standard-backdrop {
+  display: none;
+  background-color: @site-backcolor;
+  opacity: 0.4;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 100;
+}
+
+.standard-wait-message {
+  position: fixed;
+  color: #000f89;
+
+  font-size: 200%;
+  font-weight: bold;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+.standard-message-text {
+  float: right;
+  width: 260px;
+  height: 80px;
+  margin: 8px 12px 8px 20px;
+  overflow: hidden;
+  font-size: 110%;
+  line-height: 1.3em;
+  text-align: center;
+}
+
+.standard-message-glyph {
+  display: inline-block;
+  width: 80px;
+  height: auto;
+  margin: 8px 8px 8px 8px;
+}
+
+.standard-message-glyph-error {
+  background-image: url('/images/dialog/error.png')
+}
+
+.standard-message-glyph-help {
+  background-image: url('/images/dialog/help.png')
+}
+
+.standard-message-glyph-info {
+  background-image: url('/images/dialog/info.png')
+}
+
+.standard-message-glyph-power {
+  background-image: url('/images/dialog/power.png')
+}
+
+.standard-message-glyph-tick {
+  background-image: url('/images/dialog/tick.png')
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+.standard-dialog {
+  display: none;
+  position: fixed;
+
+  color: black;
+  background-color: white;
+
+  border-color: black;
+  border-radius: 12px 12px 0 12px;
+  border-style: solid;
+  border-width: 2px;
+
+  box-shadow: #242323 0 10px 40px;
+
+  z-index: 101;
+}
+
+.standard-dialog-title {
+  color: black;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  font-size: 14pt;
+  height: 1.4em;
+  margin: 0;
+  padding: 0.3em 6px 0 6px
+}
+
+.standard-dialog-title-text {
+}
+
+.standard-dialog-title-bubble {
+  float: left;
+  cursor: pointer;
+
+  right: 3px;
+  top: 3px;
+
+  color: white;
+  background-color: #1f75fe;
+
+  border-radius: 90px;
+  width: 20px;
+  height: 20px;
+
+  margin: 0 6px 0 0;
+  padding: 0;
+}
+
+.standard-dialog-buttons {
+  color: black;
+  border-style: solid;
+  border-width: 2px 0 0 0;
+  font-size: 14pt;
+  margin: 0;
+  padding: 0 6px 0 6px;
+  text-align: right;
+}
+
+.standard-button-dialog {
+  display: inline-block;
+}
+
+.standard-button-dialog + .standard-button-dialog {
+  margin-right: 0;
+}
+
+.standard-dialog-content {
+  margin: 4px;
+  padding: 0;
+}

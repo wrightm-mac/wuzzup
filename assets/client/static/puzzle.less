@@ -1,0 +1,155 @@
+/* ----------------------------------------------------------------------------
+
+                            BSD 3-Clause License
+
+                        Copyright (c) 2018, wrightm-mac
+                            All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+  * Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------------- */
+
+@import "../css/theme.less";
+
+
+section.board {
+  font-size: 18pt;
+}
+
+table.puzzle {
+  display: none;
+  border-color: black;
+  border-style: solid;
+  border-width: 3px;
+}
+
+table.puzzle td.puzzle-grid-square {
+  overflow: hidden;
+  font-size: 0.5em;
+  width: 2.6em;
+  height: 2.6em;
+  line-height: 1.2em;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  border-radius: 3px;
+  border-style: solid;
+  border-width: 2px;
+  overflow: hidden;
+}
+
+table.puzzle td.puzzle-grid-square:hover {
+  border-color: red;
+  border-radius: 0;
+}
+
+table.puzzle td.puzzle-grid-black {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+table.puzzle td.puzzle-grid-highlight {
+  background-color: #bcd4e6;
+  font-weight: bold;
+}
+
+table.puzzle td.puzzle-grid-highlight-mirror {
+  border-color: #ff0;
+}
+
+.puzzle-grid-cursor-horizontal, .puzzle-grid-cursor-vertical {
+  border-color: green;
+}
+
+table.puzzle td.puzzle-grid-cursor {
+  background-color: #a2a2d0;
+  border-color: #8a2be2;
+}
+
+table.puzzle div.puzzle-grid-anchor {
+  position: absolute;
+  font-size: 0.75em;
+  letter-spacing: 0px;
+  color: black;
+  margin: 2px 3px;
+  padding: 0;
+}
+
+table.puzzle div.puzzle-grid-letter {
+  position: absolute;
+  font-size: 2.0em;
+  font-weight: bold;
+  color: black;
+  margin: 14px 11px;
+  padding: 0;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+section.clues {
+  column-count: 2;
+  font-size: 18pt;
+}
+
+section.clues header {
+  font-size: 110%;
+  color: @header-color;
+  margin: 16px 0 0 0;
+  padding: 0;
+}
+
+ul.puzzle-list {
+  list-style-type: none;
+  color: @site-color;
+  margin: 0;
+  padding: 0 0 0 8px;
+}
+
+ul.puzzle-list li.puzzle-list-item {
+  font-size: 0.8em;
+  margin: 10px 0 0 0;
+}
+
+ul.puzzle-list li.puzzle-list-item .puzzle-list-anchor {
+  font-weight: bold;
+}
+
+ul.puzzle-list li.puzzle-list-item .puzzle-list-size {
+  font-size: 0.6em;
+}
+
+ul.puzzle-list li.puzzle-list-item .puzzle-list-word {
+  font-style: italic;
+}
+
+ul.puzzle-list li.puzzle-list-item .puzzle-list-clue {
+  margin: 0 0 0 8px;
+}

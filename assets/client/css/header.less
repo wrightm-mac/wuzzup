@@ -1,0 +1,172 @@
+/* ----------------------------------------------------------------------------
+
+                            BSD 3-Clause License
+
+                        Copyright (c) 2018, wrightm-mac
+                            All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+  * Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------------- */
+
+
+header.main {
+  color: @header-color;
+  background-color: @header-backcolor;
+  font-size: 120%;
+  text-align: right;
+
+  border-color: @header-color;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+}
+
+header.main > div {
+  margin: 0 20px 0 20px;
+}
+
+header.main span#title {
+  font-size: 400%;
+  font-weight: bold;
+  margin: 0;
+}
+
+header.main span#title a {
+  color: @header-color;
+  text-shadow: #a3c1ad 0 3px 16px;
+
+  &:link {
+    color: @header-color;
+    text-decoration: none;
+  }
+}
+
+header.main nav {
+  position: relative;
+  top: 14px;
+  right: 3px;
+  font-size: 120%;
+}
+
+header.main nav a {
+  display: inline-block;
+  border-color: @header-color;
+  border-radius: @site-border-radius;
+  border-style: solid;
+  border-width: 2px;
+
+  margin: 4px 0 0 4px;
+  padding: 0 12px 0 12px;
+  width: 160px;
+  text-align: center;
+
+  // box-shadow: #a3c1ad 0 3px 16px;
+
+  &:link {
+    text-decoration: none;
+  }
+}
+
+header.main nav a.header-nav-selected {
+  color: @header-backcolor;
+  background-color: @header-color;
+  box-shadow: #a3c1ad 0 3px 16px;
+}
+
+header.main nav a.header-nav-unselected {
+  color: @header-color;
+  background-color: @header-backcolor;
+
+  &:hover {
+    color: @header-backcolor;
+    background-color: @header-color;
+    box-shadow: #a3c1ad 0 3px 16px;
+  }
+}
+
+header.main nav a + a {
+  margin-left: 20px;
+}
+
+header.main nav a.header-nav-admin {
+  color: #007fff;
+  border-color: #007fff;
+}
+
+
+
+// -------------------------------------------------------------------------- //
+
+
+header.main div#login-bubble {
+  float: left;
+  width: 85px;
+  height: 85px;
+  position: relative;
+  top: 27px;
+  left: 0px;
+  text-align: center;
+  cursor: pointer;
+
+  color: @header-backcolor;
+  background-color: @header-color;
+  border-radius: 90px;
+
+  transform: rotate(-21deg);
+}
+
+header.main div#login-bubble div.login-bubble-text {
+  font-size: 110%;
+  font-weight: bold;
+  padding-top: 28px;
+}
+
+
+
+// -------------------------------------------------------------------------- //
+
+
+footer.main {
+  color: @header-color;
+  background-color: @header-backcolor;
+
+  height: 45px;
+  margin: 40px 0 0 0;
+  padding: 20px 0 0 0;
+  text-align: center;
+
+  border-color: @header-color;
+  border-style: solid;
+  border-width: 2px 0 0 0;
+}
+
+footer.main a {
+  color: @header-color;
+  &:link {
+    font-weight: bold;
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,130 @@
+extends layout
+
+block content
+  link(href='/css/puzzle.css', rel='stylesheet')
+  script(src="/scripts/puzzle.js")
+
+  p
+    | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum volutpat ipsum nec molestie venenatis. Curabitur tincidunt pulvinar magna sed dignissim.
+
+  h1  Edit Puzzle
+
+  section.board
+    table#edit.puzzle
+
+  section.clues
+    header Across
+      ul#across.puzzle-list
+
+    header Down
+      ul#down.puzzle-list
+
+  div.controls
+    div#savepuzzle.standard-button Save
+
+  script.
+    $(function() {
+      const $acrossList = $("ul#across");
+      const $downList = $("ul#down");
+
+      let clues = {};
+
+      $("section.clues").on("blur", "div.puzzle-list-clue", function() {
+        const $this = $(this);
+        clues[$this.closest("li").attr("data-pos")] = $this.text();
+      })
+
+      function makeAnchorId(prefix, anchor) {
+        return `${prefix}-${anchor.pos.column}-${anchor.pos.row}`;
+      }
+
+      function change(event) {
+        $acrossList.empty();
+        $downList.empty();
+
+        function makeClueItem(anchor, prefix, word) {
+          const id = makeAnchorId(prefix, anchor);
+          const $item = $("<li>", {class: "puzzle-list-item"})
+                        .attr("data-number", anchor.number)
+                        .attr("data-column", anchor.pos.column)
+                        .attr("data-row", anchor.pos.row)
+                        .attr("data-pos", id)
+                        .append($("<span>", {class: "puzzle-list-anchor"}).text(anchor.number))
+                        .append($("<span>", {class: "puzzle-list-size"}).text(` (${word.length || 0})`));
+
+          if (word.text) {
+            $item.append($("<span>", {class: "puzzle-list-word"}).text(` [${word.text || ""}]`))
+                  .append($("<div>", {class: "puzzle-list-clue", contenteditable: true}).text(clues[id] || `The clue for '${word.text}'.`));
+          }
+
+          return $item;
+        }
+
+        $.each(event.anchors, function() {
+            if (this.horizontal) {
+              $acrossList.append(makeClueItem(this, "a", this.horizontal));
+            }
+            if (this.vertical) {
+              $downList.append(makeClueItem(this, "d", this.vertical));
+            }
+        });
+      }
+
+      const settings = {
+        editing: true,
+        events: {
+          load: change,
+          anchorload: anchorload,
+          anchorsave: anchorsave,
+          cell: change,
+          letter: change
+        }
+      };
+
+      function anchorload(anchor) {
+        if (anchor.horizontal) {
+          clues[makeAnchorId("a", anchor)] = anchor.horizontal.clue;
+        }
+        if (anchor.vertical) {
+          clues[makeAnchorId("d", anchor)] = anchor.vertical.clue;
+        }
+      }
+
+      function anchorsave(anchor) {
+      }
+
+      $("#savepuzzle").click(function() {
+        const data = $("table#edit").puzzle().contents(anchor => {
+          if (anchor.horizontal) {
+            anchor.horizontal.clue = clues[makeAnchorId("a", anchor)];
+          }
+          if (anchor.vertical) {
+            anchor.vertical.clue = clues[makeAnchorId("d", anchor)];
+          }
+        });
+
+        console.log("save: data(%o)", data);
+        //$.storage.set("puzzle", data);
+
+        $.post(
+          {
+            url: "/puzzle",
+            data: data
+          }
+        ).
+        then(function(response) {
+          console.info("$.post: response - %o", response);
+        })
+        .catch(function(error) {
+          console.error("$.post: error - %o", error.responseJSON);
+        });
+      });
+
+      $("#resetpuzzle").click(function() {
+        $("table#edit").puzzle({columns: 13, rows: 13}, settings);
+      });
+
+      $("table#edit").puzzle($.storage.get("puzzle") || {},  settings)
+        .end()
+        .fadeIn();
+    });

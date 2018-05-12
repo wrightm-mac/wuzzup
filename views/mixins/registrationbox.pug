@@ -1,0 +1,46 @@
+mixin registrationbox
+    div#registration-box
+        div.login-registration-text
+            | Give us a few details so that we can get you started...
+        input.standard-input(type="text", id="regFirstName", placeholder="first name", autofocus)
+        input.standard-input(type="text", id="regLastName", placeholder="last name")
+        input.standard-input(type="email", id="regEmail", placeholder="email")
+        input.standard-input(type="password", id="regPassword", placeholder="password")
+        input.standard-input(type="password", id="regPasswordConfirm", placeholder="confirm password")
+        div.login-box-buttons
+            div#register-ok.standard-button
+                | Register
+            div#register-cancel.standard-button
+                | Cancel
+
+    script.
+        $(function() {
+            let $registrationBox = $("#registration-box");
+            $("#register-ok").click(function() {
+                $.ajax({
+                    url: "/login/register",
+                    method: "POST",
+                    data: {
+                        firstName: $("#regFirstName").val(),
+                        lastName: $("#regLastName").val(),
+                        email: $("#regEmail").val(),
+                        password: $("#regPassword").val()
+                    }
+                })
+                .done((data, status) => {
+                    console.log("login: success [response-data=%o][status=%o]", data, status);
+
+                    $.redirect("/");
+                })
+                .fail((error, message) => {
+                    console.error("login: error [error=%o][message=%o]", error, message);
+                })
+                .always(() => {
+                    $registrationBox.fadeOut();
+                });
+            });
+
+            $("#register-cancel").click(function() {
+                $registrationBox.fadeOut();
+            });
+        });

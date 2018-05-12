@@ -1,0 +1,342 @@
+/* ----------------------------------------------------------------------------
+
+                            BSD 3-Clause License
+
+                        Copyright (c) 2018, wrightm-mac
+                            All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+  * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+  * Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------------- */
+
+div.cvSection {
+  text-align: left;
+}
+
+.editorAdd {
+  width: 30px;
+}
+
+.editorAdd img {
+  width: 16px;
+  height: auto;
+  margin: 10px 0 0 0;
+  cursor: pointer;
+  padding: 0 0 0 7px;
+}
+
+.editorDelete {
+  width: 30px;
+  height: 20px;
+}
+
+.editorDelete img {
+  display: none;
+  width: 16px;
+  height: auto;
+  cursor: pointer;
+}
+
+.editorHighlightRow {
+  border-color: red;
+  border-radius: 5px;
+  border-style: dotted;
+  border-width: 1px;
+}
+
+div.tabEditor, div.tabBlurb {
+  display: none;
+  width: 100%;
+  height: 100%;
+  margin-top: @contentbelowheader;
+}
+
+#cvPersonal table {
+  width: 100%;
+}
+
+.cvSpacer {
+  height: 60px;
+}
+
+div.cvSection table {
+  border-color: black;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 0;
+
+  padding: 3px 3px 0 3px;
+}
+
+tr.editorSectionTitleRow {
+  margin: 0 0 5px 0;
+}
+
+th.editorSectionTitle {
+  background-color: white;
+  color: black;
+
+  border-color: black;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 0 0 0 0;
+
+  font-size: larger;
+
+  padding: 0 8px 0 8px;
+}
+
+div.editorSectionTitleUnderline {
+  border-color: black;
+  border-radius: 0;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+}
+
+.editorClickable {
+  width: 30px;
+  min-width: 30px;
+  vertical-align: top;
+}
+
+.editorClickable:empty {
+}
+
+.editorModified {
+
+}
+
+.editorModified:after {
+  content:  ' \2714';
+  color: red;
+  font-size: small;
+  vertical-align: top;
+}
+
+.editorControl {}
+
+.editorText {
+  width: 97%;
+  height: 100%;
+  min-width: 40px;
+
+  border-color: darkgrey;
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+td span {
+  width: 100%;
+}
+
+div.cvSection td {
+  vertical-align: top;
+}
+
+.editorColumn {
+  padding: 0 4px 0 4px;
+
+  border-color: black;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 0;
+}
+
+.editorColumnVisible {
+  width: 30px;
+  text-align: center;
+  vertical-align: center;
+}
+
+.editorColumnVisible input {
+  display: none;
+}
+
+.editorColumnDelete {
+  width: 30px;
+  text-align: center;
+  vertical-align: center;
+}
+
+td.editorColumnBlank {
+  width: 10px;
+  text-align: center;
+}
+
+td.editorColumnBlurbHeader {
+  width: 100%;
+  font-weight: bold;
+}
+
+td.editorColumnBlurbContent {
+  width: 100%;
+}
+
+td.editorColumnPersonalName {
+  width: 35%;
+  font-weight: bold;
+}
+
+td.editorColumnPersonalValue {
+  width: 65%;
+}
+
+
+td.editorColumnEducationName {
+  width: 35%;
+  font-weight: bold;
+}
+
+td.editorColumnEducationCourse {
+  width: 35%;
+}
+
+td.editorColumnEducationGraduation {
+  width: 30%;
+
+  font-style: italic;
+  text-align: right;
+}
+
+td.editorColumnEmploymentName {
+  width: 50%;
+  font-weight: bold;
+}
+
+td.editorColumnEmploymentTitle {
+  width: 50%;
+  text-align: right;
+}
+
+td.editorColumnEmploymentDate {
+  width: 35%;
+  font-style: italic;
+}
+
+td.editorColumnEmploymentDateFrom:extend(td.editorColumnEmploymentDate) {
+  text-align: right;
+}
+
+td.editorColumnEmploymentDateTo:extend(td.editorColumnEmploymentDate) {
+  text-align: left;
+}
+
+td.editorEmploymentDescriptionVisible {
+  vertical-align: top;
+  font-style: italic;
+  text-align: right;
+}
+
+td.editorEmploymentColumnDescription {
+  width: 100%;
+  vertical-align: top;
+  padding-bottom: 30px;
+}
+
+ul.editorEmploymentList {
+  list-style-type: square;
+  padding: 0 0 0 16px;
+}
+
+li.editorEmploymentListItem {
+  margin: 0 0 10px 0;
+}
+
+.ui-datepicker-calendar {
+  display: none;
+}
+
+
+// -------------------------------------------------------------------------- //
+
+
+div#editControls {
+  position: fixed;
+  right: 20px;
+  bottom: (@footerHeight  - 18px);
+  padding: 6px;
+
+  background-color: @pagecolor;
+
+  border-color: @titlecolor;
+  border-radius: 0 12px 0 12px;
+  border-style: solid;
+  border-width: 3px;
+
+  text-align: center;
+  z-index: 102;
+}
+
+div#editControls img#editorSettingsIcon {
+  float: left;
+  width: 36px;
+  height: auto;
+  cursor: pointer;
+  z-index: 102;
+}
+
+div#editControls .standardButton {
+  float: left;
+  width: @standardbuttonwidth;
+  height: @standardbuttonheight + 10px;
+  margin: 4px 0 0 6px;
+  font-size: smaller;
+  cursor: pointer;
+  z-index: 102;
+}
+
+
+// -------------------------------------------------------------------------- //
+
+
+.editDate {
+  text-align: right;
+  vertical-align: middle;
+}
+
+.editDate .editDateSelect {
+  float: left;
+
+  height: 100%;
+  margin-top: 4px;
+
+  background-color: white;
+  color: black;
+
+  border-color: darkgrey;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.editDateMonth {
+  width: 55%;
+}
+
+.editDateYear {
+  width: 35%;
+}
