@@ -137,7 +137,10 @@ $.fn.extend({
       }
     }
 
-    const size = config.size;
+    const size = {
+      columns: Number.parseInt(config.size.columns),
+      rows: Number.parseInt(config.size.rows)
+    };
     $table.data("size", size);
 
     $table.unbind(".puzzle");
@@ -147,10 +150,10 @@ $.fn.extend({
       setTimeout(function() {
         $.each(config.anchors, function() {
           const anchor = {
-            number: this.number,
+            number: Number.parseInt(this.number),
             pos: {
-              column: this.pos.column,
-              row: this.pos.row
+              column: Number.parseInt(this.pos.column),
+              row: Number.parseInt(this.pos.row)
             },
           };
 
@@ -160,13 +163,13 @@ $.fn.extend({
 
           if (this.horizontal) {
             anchor.horizontal = {
-              length: this.horizontal.length,
+              length: Number.parseInt(this.horizontal.length),
               letters: this.horizontal.letters
             };
           }
           if (this.vertical) {
             anchor.vertical = {
-              length: this.vertical.length,
+              length: Number.parseInt(this.vertical.length),
               letters: this.vertical.letters
             };
           }

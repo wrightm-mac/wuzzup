@@ -37,32 +37,32 @@ function isLoggedIn(req) {
 }
 
 function isMapLink(path, map) {
-    if (path === map.path) {
-        return true;
-    }
+  if (path === map.path) {
+      return true;
+  }
 
-    var isSelected = false;
-    if (map.children) {
-        map.children.forEach(child => {
-            isSelected = isSelected
-                || ((typeof(child) === "string") && (child === path))
-                || ((typeof(child) === "object") &&  child.test(path));
+  var isSelected = false;
+  if (map.children) {
+      map.children.forEach(child => {
+          isSelected = isSelected
+              || ((typeof(child) === "string") && (child === path))
+              || ((typeof(child) === "object") &&  child.test(path));
 
-        });
-    }
+      });
+  }
 
-    return isSelected;
+  return isSelected;
 }
 
 function nameFromPath(path, map) {
-    var name;
-    map.forEach(link => {
-        if (isMapLink(path, link)) {
-            name = link.name;
-        }
-    });
+  var name;
+  map.forEach(link => {
+      if (isMapLink(path, link)) {
+          name = link.name;
+      }
+  });
 
-    return name;
+  return name;
 }
 
 function isMapItemVisible(session, item) {

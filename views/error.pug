@@ -3,6 +3,8 @@ extends layout
 block content
   div#errorPage
     div#errorPageMessage= message
-    div#errorPageStatus= error.status
-    div#errorPageStack
-      pre #{error.stack}
+
+    if error
+      div#errorPageStatus= error.status
+      div#errorPageStack
+        pre #{error.stack}

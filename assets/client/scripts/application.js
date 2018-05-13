@@ -34,14 +34,6 @@
 
 
 $.extend({
-    fragment: function(callback) {
-        $("div [data-fragment]").each(function() {
-            $(this).fragment(callback);
-        });
-
-        return this;
-    },
-
     redirect: function(url) {
         $(location).attr('href', url);
     },
@@ -54,6 +46,10 @@ $.extend({
 
     hideWaiting: function() {
         $("body #waitGraphic").remove();
+    },
+
+    getHidden: function(name) {
+      return JSON.parse($(`#${name}`).text());
     },
 
     events: {

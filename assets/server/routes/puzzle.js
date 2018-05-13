@@ -41,28 +41,49 @@ const helper = require('./lib/helper');
 const puzzle = require('./models/puzzle');
 
 
-router.get(["/", "/index.html"], function(req, res) {
-  const page = req.query["page"] || 0;
+router.get(["/edit.html"], (req, res) => {
+  const hash = req.query["hash"];
 
-  puzzle.model.find()
-    .skip(page * config.settings.main.pagesize)
-    .limit(config.settings.main.pagesize)
-    .sort("-updatedAt")
-    .select("hash email name description size updatedAt createdAt")
-    .exec()
-    .then(function(data) {
-      res.render("index", {data: data});
+  puzzle.model.findOne({hash: hash})
+    .then(data => {
+      res.render("puzzle/edit", {
+        puzzle: data
+      });
     })
-    .catch(function(error) {
+    .catch(error => {
       helper.dumpError(error);
-      res.render("error", {error: error});
+      res.render("error", {
+        message: "something has gone wrong"
+      });
     });
 });
 
-router.get("/:view.html", function(req, res) {
-  const view = req.params.view;
+router.get(["/play.html"], (req, res) => {
+  const hash = req.query["id"];
 
-  res.render(view);
+  if (hash) {
+    puzzle.model.findOne({hash: hash})
+      .then(data => {
+        res.render("puzzle/play", {
+          puzzle: data
+        });
+      })
+      .catch(error => {
+        helper.dumpError(error);
+        res.render("error", {
+          message: "something has gone wrong"
+        });
+      });
+  }
+  else {
+    res.render("error", {
+      message: "no puzzle"
+    });
+  }
+});
+
+router.post("/", (req, res) => {
+
 });
 
 module.exports = router;

@@ -55,7 +55,9 @@ module.exports = {
             name: "puzzles",
             path: "/index.html",
             children: [
-              "/"
+              "/",
+              "/puzzle/edit.html",
+              "/puzzle/play.html"
             ]
         }, {
             name: "create",

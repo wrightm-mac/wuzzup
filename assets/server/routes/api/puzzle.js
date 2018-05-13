@@ -61,10 +61,10 @@ router.get('/', function(req, res, next) {
   :id - puzzle's identifier.
 */
 router.get('/:hash', (req, res) => {
-  puzzle.model.find({hash: req.params.hash})
+  puzzle.model.findOne({hash: req.params.hash})
     .then(data => {
-      if (data && data.length) {
-        res.send(data[0]);
+      if (data) {
+        res.send(data);
       }
       else {
         res.status(404);

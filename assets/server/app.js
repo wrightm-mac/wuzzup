@@ -50,6 +50,7 @@ const session = require('./routes/lib/session');
 const fragments = require('./routes/fragments');
 const index = require('./routes/index');
 const login = require('./routes/login');
+const puzzle = require('./routes/puzzle');
 
 const apiUsers = require('./routes/api/users');
 const apiPuzzle = require('./routes/api/puzzle');
@@ -90,7 +91,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', function(req, res, next) {
     if (!(req.session.user && req.session.user.roles.includes("api"))) {
         var err = new Error('Forbidden');
-        err.status = 404;
+        err.status = 403;
         next(err);
     } else {
         next();
@@ -101,14 +102,16 @@ app.use('/api', function(req, res, next) {
 // 'req' object (and all of its contents) visible as a local
 // to code in the pug view...
 app.use(function(req, res, next) {
-    res.locals.req = req;
-    next();
+  req.fullpath = req.path;
+  res.locals.req = req;
+  next();
 });
 
 
 // The application's pages...
 app.use('/', index);
 app.use('/login', login);
+app.use('/puzzle', puzzle);
 
 // The application's API handlers...
 app.use('/api/users', apiUsers);

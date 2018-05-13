@@ -1,7 +1,7 @@
 mixin blurb(puzzle)
 
   div.puzzle-blurb
-    a(href='/play.html?p=' + puzzle.hash)= 'Puzzle' || puzzle.name
+    a(href='/puzzle/play.html?id=' + puzzle.hash)= 'Puzzle' || puzzle.name
     div= puzzle.email
     div= puzzle.updatedAt
 

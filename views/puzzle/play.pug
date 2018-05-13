@@ -1,0 +1,60 @@
+extends ../layout
+
+include ../mixins/hidden
+
+block content
+  link(href='/css/puzzle.css', rel='stylesheet')
+  script(src="/scripts/puzzle.js")
+
+  h1= puzzle.name ||  "Puzzle"
+
+  section.board
+    table#edit.puzzle
+
+  section.clues
+    header Across
+    ul#across.puzzle-list
+
+    header Down
+    ul#down.puzzle-list
+
+  +hidden('puzzle-content', puzzle)
+
+  script.
+    $(function() {
+      const $acrossList = $("ul#across");
+      const $downList = $("ul#down");
+
+      const settings = {
+        editing: false,
+        events: {
+          anchorload: anchorload,
+          letter: function(event) {
+
+          }
+        }
+      };
+
+      function makeClueItem(anchor, word) {
+        const $item = $("<li>", {class: "puzzle-list-item"})
+                      .append($("<span>", {class: "puzzle-list-anchor"}).text(anchor.number))
+                      .append($("<span>", {class: "puzzle-list-clue"}).text(word.clue || "[not set]"))
+                      .append($("<span>", {class: "puzzle-list-size"}).text(` (${word.length})`));
+
+        return $item;
+      }
+
+      function anchorload(anchor) {
+        if (anchor.horizontal) {
+          $acrossList.append(makeClueItem(anchor, anchor.horizontal));
+        }
+        if (anchor.vertical) {
+          $downList.append(makeClueItem(anchor, anchor.vertical));
+        }
+      }
+
+      const puzzle = $.getHidden("puzzle-content");
+      $("table#edit").puzzle(puzzle,  settings)
+        .end()
+        .fadeIn();
+    });

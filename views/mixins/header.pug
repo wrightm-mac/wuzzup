@@ -18,7 +18,7 @@ mixin header
       nav
         span
           each item in site.map
-            - let isCurrentPage = isMapLink(req.path, item);
+            - let isCurrentPage = isMapLink(req.fullpath, item);
             - let linkClass = isCurrentPage ? "header-nav-selected" : "header-nav-unselected";
             - let linkPath = isCurrentPage ? undefined : item.path;
             if (isMapItemVisible(req.session, item) && (! item.hidden))
