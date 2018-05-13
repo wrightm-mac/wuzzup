@@ -125,11 +125,11 @@ router.post('/', (req, res) => {
   Deletes a logged-in session.
 */
 router.delete('/', (req, res) => {
-  console.log("router:delete");
-
   delete req.session.user;
 
-  helper.sendOk(res, { message: "user logout"});
+  res.send({
+    message: "user logout"
+  });
 });
 
 module.exports = router;
