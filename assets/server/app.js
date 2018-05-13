@@ -117,9 +117,6 @@ app.use('/puzzle', puzzle);
 app.use('/api/users', apiUsers);
 app.use('/api/puzzle', apiPuzzle);
 
-// The application's fragments...
-app.use('/fragments', fragments);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
