@@ -35,31 +35,10 @@
 const mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
-  firstname: {
-      type: String,
-      required: true,
-      index: false,
-      trim: true
-  },
-  lastname: {
-      type: String,
-      required: true,
-      index: false,
-      trim: true
-  },
   hash: {
-      type: String,
-      required: true,
-      index: true
-  },
-  roles: [String],
-  email: {
-      type: String,
-      required: true,
-      index: true,
-      unique: true,
-      trim: true,
-      lowercase: true
+    type: String,
+    required: true,
+    index: true
   },
   username: {
     type: String,
@@ -69,10 +48,19 @@ var UserSchema = new mongoose.Schema({
     trim: true,
     lowercase: false
   },
-  password: {
-      type: String,
-      required: true
+  email: {
+    type: String,
+    required: true,
+    index: true,
+    unique: true,
+    trim: true,
+    lowercase: true
   },
+  password: {
+    type: String,
+    required: true
+  },
+  roles: [String],
   validated: Boolean,
   suspended: Boolean,
   deleted: Boolean

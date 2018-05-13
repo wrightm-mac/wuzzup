@@ -57,35 +57,33 @@ function loginUser(req, data) {
   Creates a new user.
 */
 router.post('/register', (req, res) => {
-  let firstName = req.body.firstName;
-  let lastName = req.body.lastName;
-  let email = req.body.email;
-  let password = req.body.password;
-
-  let passwordHash = helper.hash(password);
-  let userHash = helper.id();
-
-  console.log("/login/register [first-name=%s][last-name=%s][email=%s][password=%s][hash=%s]", firstName, lastName, email, password, passwordHash);
-
-  let newUser = new user.model({
-    firstname: firstName,
-    lastname: lastName,
-    roles: ["user"],
-    hash: userHash,
-    email: email,
-    password: passwordHash
+  const data = req.body;
+  const newuser = new user.model({
+    username: data.username,
+    hash: helper.id(),
+    email: data.email,
+    username: data.username,
+    password: helper.hash(data.password),
+    roles: data.roles || ["user"],
+    validated: data.validated || false,
+    suspended: data.suspended || false,
+    deleted: false
   });
 
-  newUser.save(helper.responder(res, (data) => {
-    console.log("saved new user! (%o)", data);
-
-    if (data) {
-      return loginUser(req, data);
-    }
-    else {
-      res.status(406);
-    }
-  }));
+  newuser.save()
+    .then(user => {
+      req.session.user = user;
+      res.send(user);
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(500);
+      res.send({
+        status: 500,
+        error: error.name || "unknown error",
+        message: error.message
+      });
+    });
 });
 
 
@@ -100,7 +98,7 @@ router.post('/', (req, res) => {
     .where({password: hash})
     .where({suspended: false})
     .where({deleted: false})
-    .select("firstname lastname email username roles")
+    .select("email username roles")
     .then(user => {
       if (user) {
         req.session.user = user;

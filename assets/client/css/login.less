@@ -35,7 +35,7 @@
 
 #login-box, #registration-box {
   display: none;
-  position: fixed;
+  position: absolute;
 
   top: 5px;
   left: 5px;
@@ -48,7 +48,7 @@
   border-style: solid;
   border-width: @site-border-width;
 
-  padding: 12px;
+  padding: 16px 18px 6px 10px;
 
   z-index: 9003;
 }
@@ -62,16 +62,8 @@
 }
 
 div.login-box-buttons {
-  margin: 4px 0 0 0;
+  margin: 10px 0 0 5px;
   text-align: center;
-}
-
-.login-box-buttons .standardButton {
-  // margin-right: 0;
-}
-
-.login-box-buttons .standardButton + .standardButton {
-  // margin-left: 5px;
 }
 
 .login-registration-text {
@@ -81,8 +73,8 @@ div.login-box-buttons {
   line-height: 1.1;
   text-align: center;
 
-  margin: 0 0 8px 0;
-  padding: 8px 0 0 0;
+  margin: 6px 0 2px 0;
+  padding: 1px 0 4px 0;
 }
 
 #login-register {

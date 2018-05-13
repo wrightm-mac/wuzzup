@@ -98,8 +98,7 @@ router.post('/', (req, res) => {
   if (req.session.user.roles.includes("admin")) {
     const data = req.body;
     const newuser = new user.model({
-      firstname: data.firstname,
-      lastname: data.lastname,
+      username: data.username,
       hash: helper.id(),
       email: data.email,
       username: data.username,
