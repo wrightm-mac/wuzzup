@@ -42,9 +42,9 @@ const puzzle = require('./models/puzzle');
 
 
 router.get(["/edit.html"], (req, res) => {
-  const hash = req.query["hash"];
+  const hash = req.query["id"];
 
-  puzzle.model.findOne({hash: hash})
+  puzzle.model.findOne({hash: id})
     .then(data => {
       res.render("puzzle/edit", {
         puzzle: data
@@ -59,10 +59,10 @@ router.get(["/edit.html"], (req, res) => {
 });
 
 router.get(["/play.html"], (req, res) => {
-  const hash = req.query["id"];
+  const id = req.query["id"];
 
-  if (hash) {
-    puzzle.model.findOne({hash: hash})
+  if (id) {
+    puzzle.model.findOne({hash: id})
       .then(data => {
         res.render("puzzle/play", {
           puzzle: data

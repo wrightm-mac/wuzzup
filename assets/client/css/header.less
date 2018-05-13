@@ -36,7 +36,7 @@
 header.main {
   color: @header-color;
   background-color: @header-backcolor;
-  font-size: 120%;
+  // font-size: 120%;
   text-align: right;
 
   border-color: @header-color;
@@ -49,14 +49,13 @@ header.main > div {
 }
 
 header.main span#title {
-  font-size: 400%;
+  font-size: 40pt;
   font-weight: bold;
-  margin: 0;
+  margin: 2px 0 0 0;
 }
 
 header.main span#title a {
   color: @header-color;
-  text-shadow: #a3c1ad 0 3px 16px;
 
   &:link {
     color: @header-color;
@@ -66,9 +65,9 @@ header.main span#title a {
 
 header.main nav {
   position: relative;
-  top: 14px;
-  right: 3px;
-  font-size: 120%;
+  top: 12px;
+  right: 2px;
+  font-size: 15pt;
 }
 
 header.main nav a {
@@ -80,10 +79,8 @@ header.main nav a {
 
   margin: 4px 0 0 4px;
   padding: 0 12px 0 12px;
-  width: 160px;
+  width: 120px;
   text-align: center;
-
-  // box-shadow: #a3c1ad 0 3px 16px;
 
   &:link {
     text-decoration: none;
@@ -93,7 +90,6 @@ header.main nav a {
 header.main nav a.header-nav-selected {
   color: @header-backcolor;
   background-color: @header-color;
-  box-shadow: #a3c1ad 0 3px 16px;
 }
 
 header.main nav a.header-nav-unselected {
@@ -103,7 +99,6 @@ header.main nav a.header-nav-unselected {
   &:hover {
     color: @header-backcolor;
     background-color: @header-color;
-    box-shadow: #a3c1ad 0 3px 16px;
   }
 }
 
@@ -123,10 +118,10 @@ header.main nav a.header-nav-admin {
 
 header.main div#login-bubble {
   float: left;
-  width: 85px;
-  height: 85px;
+  width: 65px;
+  height: 65px;
   position: relative;
-  top: 27px;
+  top: 14px;
   left: 0px;
   text-align: center;
   cursor: pointer;
@@ -139,9 +134,9 @@ header.main div#login-bubble {
 }
 
 header.main div#login-bubble div.login-bubble-text {
-  font-size: 110%;
+  font-size: 13pt;
   font-weight: bold;
-  padding-top: 28px;
+  padding-top: 22px;
 }
 
 
@@ -152,6 +147,8 @@ header.main div#login-bubble div.login-bubble-text {
 footer.main {
   color: @header-color;
   background-color: @header-backcolor;
+
+  font-size: 12pt;
 
   height: 45px;
   margin: 40px 0 0 0;
@@ -165,8 +162,9 @@ footer.main {
 
 footer.main a {
   color: @header-color;
+
   &:link {
     font-weight: bold;
-    text-decoration: none;
+    text-decoration: underline;
   }
 }

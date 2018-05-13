@@ -51,9 +51,24 @@ router.get(["/", "/index.html"], function(req, res) {
     .sort("-updatedAt")
     .select("hash email name description size updatedAt createdAt")
     .then(function(data) {
-      res.render("index", {data: data});
+      res.render("index", {
+        data: data
+      });
     })
     .catch(function(error) {
+      helper.dumpError(error);
+      res.render("error", {error: error});
+    });
+});
+
+router.get("/create.html", function(req, res) {
+  puzzle.model.find()
+    .then(puzzles => {
+      res.render("create", {
+        puzzles: puzzles
+      });
+    })
+    .catch(error => {
       helper.dumpError(error);
       res.render("error", {error: error});
     });

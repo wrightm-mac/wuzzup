@@ -66,7 +66,13 @@ const PuzzleSchema = new mongoose.Schema({
     required: true
   },
   anchors: [],
-  deleted: Boolean
+  publishedAt: {
+    type: Date
+  },
+  deleted: {
+    type: Boolean,
+    required: true
+  },
 }, { timestamps: true });
 
 module.exports = {
