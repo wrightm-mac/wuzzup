@@ -65,7 +65,8 @@ const PuzzleSchema = new mongoose.Schema({
     },
     required: true
   },
-  anchors: []
+  anchors: [],
+  deleted: Boolean
 }, { timestamps: true });
 
 module.exports = {

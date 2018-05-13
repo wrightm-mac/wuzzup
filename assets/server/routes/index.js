@@ -45,11 +45,11 @@ router.get(["/", "/index.html"], function(req, res) {
   const page = req.query["page"] || 0;
 
   puzzle.model.find()
+    //.where({deleted: false})
     .skip(page * config.settings.main.pagesize)
     .limit(config.settings.main.pagesize)
     .sort("-updatedAt")
     .select("hash email name description size updatedAt createdAt")
-    .exec()
     .then(function(data) {
       res.render("index", {data: data});
     })

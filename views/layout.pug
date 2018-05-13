@@ -4,7 +4,7 @@ include ./mixins/header
 include ./mixins/footer
 
 head
-  title  #{site.title} | #{nameFromPath(req.path, site.map)}
+  title  #{site.title} | #{nameFromPath(req.fullpath, site.map)}
   link(href='/css/styles.css', rel='stylesheet')
   script(src="/scripts/jquery-3.2.1.min.js")
   script(src="/scripts/application.js")

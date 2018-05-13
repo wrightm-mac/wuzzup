@@ -37,53 +37,43 @@ const sha = require('./hash/sha');
 
 module.exports = {
     site: {
-        title: "wuzzup",
-        id: {
-            name: "wuzzup.com",
-            version: 0.1,
-        },
-        get hash() {
-            let hasher = new sha("SHA-1", "TEXT");
-            hasher.update(`${this.id.name}+${this.id.version}`);
+      title: "wuzzup",
+      id: {
+          name: "wuzzup.com",
+          version: 0.1,
+      },
 
-            return hasher.getHash("HEX");
-        },
-        //image: "/images/headergraphic.png",
-        showMenuAlways: false,  // Show sub-menu even when not logged in.
-        showMenuEmpty: false,    // Show sub-menu bar even when there are no items.
-        map: [{
-            name: "puzzles",
-            path: "/index.html",
-            children: [
-              "/",
-              "/puzzle/edit.html",
-              "/puzzle/play.html"
-            ]
-        }, {
-            name: "create",
-            roles: ["user"],
-            path: "/create.html",
-            children: [
-              "/edit.html"
-            ]
-        }, {
-            name: "about",
-            path: "/about.html"
-        }, {
-            name: "admin",
-            path: "/admin.html",
-            roles: ["admin"],
-            class: "header-nav-admin"
-        }],
-        submenus: {
-          viewer: [{
-            name: "about",
-            selector: ".tabBlurb"
-          }, {
-            name: "cv",
-            selector: ".tabEditor"
-          }],
-      }
+      get hash() {
+          let hasher = new sha("SHA-1", "TEXT");
+          hasher.update(`${this.id.name}+${this.id.version}`);
+
+          return hasher.getHash("HEX");
+      },
+
+      map: [{
+        name: "puzzles",
+        path: "/index.html",
+        children: [
+          {path: "/", name: "puzzles"},
+          {path: "/puzzle/edit.html", name: "edit"},
+          {path: "/puzzle/play.html", name: "play"}
+        ]
+      }, {
+        name: "create",
+        roles: ["user"],
+        path: "/create.html",
+        children: [
+          {path: "/edit.html", name: "edit"}
+        ]
+      }, {
+        name: "about",
+        path: "/about.html"
+      }, {
+        name: "admin",
+        path: "/admin.html",
+        roles: ["admin"],
+        class: "header-nav-admin"
+      }],
     },
     mongo: {
         host: process.env.NODE_MONGO_HOST || '127.0.0.1',

@@ -14,30 +14,15 @@ mixin header
       span#title
         a(href='/')= site.title
 
-      - let currentItem;
       nav
         span
           each item in site.map
-            - let isCurrentPage = isMapLink(req.fullpath, item);
-            - let linkClass = isCurrentPage ? "header-nav-selected" : "header-nav-unselected";
-            - let linkPath = isCurrentPage ? undefined : item.path;
-            if (isMapItemVisible(req.session, item) && (! item.hidden))
+            if mapItemVisible(req.session, item) && (! item.hidden)
+              - let linkClass = mapLink(req.fullpath, item) ? "header-nav-selected" : "header-nav-unselected";
               if item.class
                 - linkClass += " " + item.class;
-              a(href=linkPath, class= linkClass, disabled= isCurrentPage) #{item.name}
+              a(href=item.path, class= linkClass, disabled= isCurrentPage) #{item.name}
 
-            if isCurrentPage
-              - currentItem = item;
-
-      - let menu = site.submenus[submenu] || (currentItem && currentItem.menu);
-      if (menu || site.showMenuEmpty) && (site.showMenuAlways || isLoggedIn(req))
-        div.headerNavigationMenu
-          span
-            if menu
-              each menuItem, index in menu
-                a.headerNavMenuUnselected(data-index=index, data-selector=menuItem.selector)= menuItem.name
-            else
-              | &nbsp;
 
         script.
           $(function() {

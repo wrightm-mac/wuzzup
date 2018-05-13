@@ -38,16 +38,15 @@ const helper = require('./lib/helper');
 
 
 function loginUser(req, data) {
-  let sessionToken = helper.id();
-
   req.session.user = {
     id: data._id,
     firstname: data.firstname,
     lastname: data.lastname,
     email: data.email,
+    username: data.username,
     roles: data.roles,
     login: true,
-    token: sessionToken
+    token: helper.id()
   };
 
   return req.session.user;
@@ -95,21 +94,31 @@ router.post('/register', (req, res) => {
 */
 router.post('/', (req, res) => {
   let email = req.body.email;
-  let password = helper.hash(req.body.password);
+  let hash = helper.hash(req.body.password);
 
-  console.log("/api/login [email=%s][password=%s]", email, password);
-
-  user.model.findOne({ $and: [{ email: email }, { password: password }]},
-                      { _id: true, firstname: true, lastname: true, email: true, roles: true, hash: true, validated: true },
-                      helper.responder(res, (data) => {
-
-    if (data) {
-      return loginUser(req, data);
-    }
-    else {
-      res.status(406);
-    }
-  }));
+  user.model.findOne({email: email})
+    .where({password: hash})
+    .where({suspended: false})
+    .where({deleted: false})
+    .select("firstname lastname email username roles")
+    .then(user => {
+      if (user) {
+        req.session.user = user;
+        res.send(user);
+      }
+      else {
+        res.status(406);
+        res.send({
+          status: 406,
+          message: "unacceptable"
+        });
+      }
+    }).
+    catch(error => {
+      helper.dumpError();
+      res.status(500);
+      res.send({message: "something has gone wrong"});
+    });
 });
 
 /**

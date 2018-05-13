@@ -10,9 +10,9 @@ block content
 
   h1= puzzle.name ||  "Puzzle"
 
-  +board('edit')
+  +board('play')
 
-  +clues
+  +clues('playclues')
 
   +hidden('puzzle-content', puzzle)
 
@@ -50,7 +50,7 @@ block content
       }
 
       const puzzle = $.getHidden("puzzle-content");
-      $("table#edit").puzzle(puzzle,  settings)
+      $("table#play").puzzle(puzzle,  settings)
         .end()
         .fadeIn();
     });

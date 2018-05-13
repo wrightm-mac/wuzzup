@@ -42,21 +42,43 @@ const user = require('../models/user');
 /**
   Gets all users.
 */
-router.get('/', function(req, res, next) {
-    user.model.find(helper.responder(res));
+router.get('/', function(req, res) {
+  user.model.find()
+    .sort("email")
+    .then(users => {
+      res.send(users);
+    }).
+    catch(error => {
+      helper.dumpError();
+      res.status(500);
+      res.send({message: "something has gone wrong"});
+    });
 });
 
 /**
   Gets an identified user.
 
-  :id - user's identifier.
+  :hash - user's identifier.
 */
-router.get('/:id', (req, res) => {
-    user.model.findById(req.params.id, helper.responder(res, (data) => {
-        if (!data) {
-            res.status(404);
-        }
-    }));
+router.get('/:hash', (req, res) => {
+  user.model.findOne({hash: req.params.hash})
+    .then(user => {
+      if (user) {
+        res.send(user);
+      }
+      else {
+        res.status(404);
+        res.send({
+          status: "404",
+          message: "not found"
+        });
+      }
+    }).
+    catch(error => {
+      helper.dumpError();
+      res.status(500);
+      res.send({message: "something has gone wrong"});
+    });
 });
 
 /**

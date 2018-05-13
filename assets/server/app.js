@@ -52,7 +52,7 @@ const index = require('./routes/index');
 const login = require('./routes/login');
 const puzzle = require('./routes/puzzle');
 
-const apiUsers = require('./routes/api/users');
+const apiUser = require('./routes/api/users');
 const apiPuzzle = require('./routes/api/puzzle');
 
 const app = express();
@@ -90,9 +90,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Prevent access to 'api' if the user does not have permission...
 app.use('/api', function(req, res, next) {
     if (!(req.session.user && req.session.user.roles.includes("api"))) {
-        var err = new Error('Forbidden');
-        err.status = 403;
-        next(err);
+      res.status(403);
+      res.send({
+        status: 403,
+        message: "forbidden"
+      });
     } else {
         next();
     }
@@ -114,7 +116,7 @@ app.use('/login', login);
 app.use('/puzzle', puzzle);
 
 // The application's API handlers...
-app.use('/api/users', apiUsers);
+app.use('/api/user', apiUser);
 app.use('/api/puzzle', apiPuzzle);
 
 

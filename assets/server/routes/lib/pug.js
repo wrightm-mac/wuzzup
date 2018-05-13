@@ -36,36 +36,29 @@ function isLoggedIn(req) {
   return req.session && req.session.user;
 }
 
-function isMapLink(path, map) {
+function mapLink(path, map) {
   if (path === map.path) {
-      return true;
+    return map.name;
   }
 
-  var isSelected = false;
-  if (map.children) {
-      map.children.forEach(child => {
-          isSelected = isSelected
-              || ((typeof(child) === "string") && (child === path))
-              || ((typeof(child) === "object") &&  child.test(path));
-
-      });
+  for (const child of map.children || []) {
+    if (((typeof(child.path) === "string") && (child.path === path))
+        || ((typeof(child.path) === "object") &&  child.path.test(path))) {
+      return child.name;
+    }
   }
-
-  return isSelected;
 }
 
 function nameFromPath(path, map) {
-  var name;
-  map.forEach(link => {
-      if (isMapLink(path, link)) {
-          name = link.name;
-      }
-  });
-
-  return name;
+  for (const item of map) {
+    const name = mapLink(path, item);
+    if (name) {
+      return name;
+    }
+  }
 }
 
-function isMapItemVisible(session, item) {
+function mapItemVisible(session, item) {
     // An item without any roles should always be visible...
     if (! item.roles) {
         return true;
@@ -143,9 +136,9 @@ const dateFormat = {
 
 module.exports = {
   isLoggedIn,
+  mapLink,
   nameFromPath,
-  isMapLink,
-  isMapItemVisible,
+  mapItemVisible,
   id: new Id(),
   dateFormat
 };

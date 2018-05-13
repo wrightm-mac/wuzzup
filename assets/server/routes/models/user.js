@@ -62,11 +62,21 @@ var UserSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    username: {
+      type: String,
+      required: true,
+      index: true,
+      unique: true,
+      trim: true,
+      lowercase: false
+    },
     password: {
         type: String,
         required: true
     },
-    validated: Boolean
+    validated: Boolean,
+    suspended: Boolean,
+    deleted: Boolean
 }, { timestamps: true });
 
 module.exports = {
