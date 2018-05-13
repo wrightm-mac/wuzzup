@@ -1,6 +1,8 @@
 extends ../layout
 
 include ../mixins/hidden
+include ../mixins/puzzle/board
+include ../mixins/puzzle/clues
 
 block content
   link(href='/css/puzzle.css', rel='stylesheet')
@@ -8,15 +10,9 @@ block content
 
   h1= puzzle.name ||  "Puzzle"
 
-  section.board
-    table#edit.puzzle
+  +board('edit')
 
-  section.clues
-    header Across
-    ul#across.puzzle-list
-
-    header Down
-    ul#down.puzzle-list
+  +clues
 
   +hidden('puzzle-content', puzzle)
 
