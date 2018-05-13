@@ -32,52 +32,60 @@
 
 ----------------------------------------------------------------------------- */
 
-var mongoose = require("mongoose");
-
+const mongoose = require("mongoose");
 
 var UserSchema = new mongoose.Schema({
-    firstname: {
-        type: String,
-        required: true,
-        index: false,
-        trim: true
-    },
-    lastname: {
-        type: String,
-        required: true,
-        index: false,
-        trim: true
-    },
-    hash: {
-        type: String,
-        required: true,
-        index: true
-    },
-    roles: [String],
-    email: {
-        type: String,
-        required: true,
-        index: true,
-        unique: true,
-        trim: true,
-        lowercase: true
-    },
-    username: {
+  firstname: {
+      type: String,
+      required: true,
+      index: false,
+      trim: true
+  },
+  lastname: {
+      type: String,
+      required: true,
+      index: false,
+      trim: true
+  },
+  hash: {
+      type: String,
+      required: true,
+      index: true
+  },
+  roles: [String],
+  email: {
       type: String,
       required: true,
       index: true,
       unique: true,
       trim: true,
-      lowercase: false
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    validated: Boolean,
-    suspended: Boolean,
-    deleted: Boolean
-}, { timestamps: true });
+      lowercase: true
+  },
+  username: {
+    type: String,
+    required: true,
+    index: true,
+    unique: true,
+    trim: true,
+    lowercase: false
+  },
+  password: {
+      type: String,
+      required: true
+  },
+  validated: Boolean,
+  suspended: Boolean,
+  deleted: Boolean
+},
+{
+  timestamps: true
+});
+
+Object.assign(UserSchema.methods, {
+  hasRole: function(role) {
+    return (this.roles || []).includes(role);
+  }
+});
 
 module.exports = {
     schema: UserSchema,

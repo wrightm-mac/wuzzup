@@ -51,7 +51,12 @@ router.get('/', function(req, res) {
     catch(error => {
       helper.dumpError();
       res.status(500);
-      res.send({message: "something has gone wrong"});
+      res.status(error.status || 500);
+      res.send({
+        status: error.status || 500,
+        error: error.name || "unknown error",
+        message: error.message
+      });
     });
 });
 
@@ -64,6 +69,7 @@ router.get('/:hash', (req, res) => {
   user.model.findOne({hash: req.params.hash})
     .then(user => {
       if (user) {
+        console.log("GET: /api/user('user'=%s)", user.hasRole("user"));
         res.send(user);
       }
       else {
@@ -76,25 +82,55 @@ router.get('/:hash', (req, res) => {
     }).
     catch(error => {
       helper.dumpError();
-      res.status(500);
-      res.send({message: "something has gone wrong"});
-    });
+      res.status(error.status || 500);
+      res.send({
+        status: error.status || 500,
+        error: error.name || "unknown error",
+        message: error.message
+      });
+  });
 });
 
 /**
   Adds a new user.
 */
 router.post('/', (req, res) => {
-    let passwordHash = req.body.password;
-
-    let newUser = new user.model({
-        name: req.body.name,
-        roles: ["user"],
-        email: req.body.email,
-        password: passwordHash
+  if (req.session.user.roles.includes("admin")) {
+    const data = req.body;
+    const newuser = new user.model({
+      firstname: data.firstname,
+      lastname: data.lastname,
+      hash: helper.id(),
+      email: data.email,
+      username: data.username,
+      password: helper.hash(data.password),
+      roles: data.roles || ["user"],
+      validated: data.validated || false,
+      suspended: data.suspended || false,
+      deleted: false
     });
 
-    newUser.save(helper.responder(res));
+    newuser.save()
+      .then(user => {
+        res.send(user);
+      })
+      .catch(error => {
+        helper.dumpError(error);
+        res.status(500);
+        res.send({
+          status: 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+      });
+  }
+  else {
+    res.status(403);
+    res.send({
+      status: 403,
+      message: "forbidden"
+    });
+  }
 });
 
 /**
@@ -103,9 +139,7 @@ router.post('/', (req, res) => {
   :id - user's identifier.
 */
 router.put('/:id', (req, res) => {
-    req.body.updated_at = Date.now();
-
-    user.model.findByIdAndUpdate(req.params.id, req.body, helper.responder(res));
+  console.log("PUT: /api/user");
 });
 
 /**
@@ -114,7 +148,7 @@ router.put('/:id', (req, res) => {
   :id - user's identifier.
 */
 router.delete('/:id', (req, res) => {
-    user.model.findByIdAndRemove(req.params.id, helper.responder(res));
+  console.log("DELETE: /api/user");
 });
 
 module.exports = router;

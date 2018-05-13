@@ -52,7 +52,7 @@ const index = require('./routes/index');
 const login = require('./routes/login');
 const puzzle = require('./routes/puzzle');
 
-const apiUser = require('./routes/api/users');
+const apiUser = require('./routes/api/user');
 const apiPuzzle = require('./routes/api/puzzle');
 
 const app = express();
@@ -129,13 +129,24 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
+  const status = err.status || 500;
+  res.status(status);
+
+  // Don't render a view if the error is from an api call...
+  if (req.fullpath.startsWith("/api/")) {
+    res.send({
+      status: 500,
+      error: err.name || "error",
+      message: err.message,
+      stack: req.app.get('env') === 'development' ? (err.stack || "").split("\n") : []
+    });
+  }
+  else {
+    // Set locals, only providing error in development...
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
     res.render('error');
+  }
 });
 
 module.exports = app;
