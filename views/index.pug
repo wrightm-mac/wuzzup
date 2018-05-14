@@ -4,6 +4,8 @@ include ./mixins/puzzle/blurb
 
 block content
 
-  p
-    each puzzle in data
+  section.puzzle
+    legend Puzzles
+
+    each puzzle in puzzles
       +blurb(puzzle)

@@ -43,15 +43,16 @@ const puzzle = require('../models/puzzle');
 router.get('/', function(req, res, next) {
   puzzle.model.find()
     .then(data => {
-      res.send(data);
+      res.json(data);
     })
     .catch(error => {
       helper.dumpError(error);
-      res.status(500);
-      res.send({
-        status: 500,
-        message: "something has gone wrong"
-      });
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
     });
 });
 
@@ -64,23 +65,24 @@ router.get('/:hash', (req, res) => {
   puzzle.model.findOne({hash: req.params.hash})
     .then(data => {
       if (data) {
-        res.send(data);
+        res.json(data);
       }
       else {
-        res.status(404);
-        res.send({
-          status: "404",
-          message: "not found"
-        });
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
       }
     })
     .catch(error => {
       helper.dumpError(error);
-      res.status(500);
-      res.send({
-        status: 500,
-        message: "something has gone wrong"
-      });
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
     });
 });
 
@@ -95,15 +97,16 @@ router.post('/', (req, res) => {
   const record = new puzzle.model(data);
   record.save()
     .then(data => {
-      res.send(data);
+      res.json(data);
     })
     .catch(error => {
       helper.dumpError(error);
-      res.status(500);
-      res.send({
-        status: 500,
-        message: "something has gone wrong"
-      });
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
     });
 });
 
@@ -113,7 +116,13 @@ router.post('/', (req, res) => {
   :id - puzzle's identifier.
 */
 router.put('/:id', (req, res) => {
-  //puzzle.model.findByIdAndUpdate(req.params.id, req.body, helper.responder(res));
+  console.log("PUT: /api/puzzle");
+  res.status(501)
+    .json({
+      status: 501,
+      error: "not implemented",
+      message: "PUT not supported"
+    });
 });
 
 /**
@@ -122,7 +131,13 @@ router.put('/:id', (req, res) => {
   :id - puzzle's identifier.
 */
 router.delete('/:id', (req, res) => {
-  // puzzle.model.findByIdAndRemove(req.params.id, helper.responder(res));
+  console.log("DELETE: /api/puzzle");
+  res.status(501)
+    .json({
+      status: 501,
+      error: "not implemented",
+      message: "DELETE not supported"
+    });
 });
 
 module.exports = router;

@@ -46,17 +46,16 @@ router.get('/', function(req, res) {
   user.model.find()
     .sort("email")
     .then(users => {
-      res.send(users);
+      res.json(users);
     }).
     catch(error => {
       helper.dumpError();
-      res.status(500);
-      res.status(error.status || 500);
-      res.send({
-        status: error.status || 500,
-        error: error.name || "unknown error",
-        message: error.message
-      });
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
     });
 });
 
@@ -69,26 +68,25 @@ router.get('/:hash', (req, res) => {
   user.model.findOne({hash: req.params.hash})
     .then(user => {
       if (user) {
-        console.log("GET: /api/user('user'=%s)", user.hasRole("user"));
-        res.send(user);
+        res.json(user);
       }
       else {
-        res.status(404);
-        res.send({
-          status: "404",
-          message: "not found"
-        });
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
       }
     }).
     catch(error => {
       helper.dumpError();
-      res.status(error.status || 500);
-      res.send({
-        status: error.status || 500,
-        error: error.name || "unknown error",
-        message: error.message
-      });
-  });
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+});
 });
 
 /**
@@ -111,24 +109,24 @@ router.post('/', (req, res) => {
 
     newuser.save()
       .then(user => {
-        res.send(user);
+        res.json(user);
       })
       .catch(error => {
         helper.dumpError(error);
-        res.status(500);
-        res.send({
-          status: 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
+        res.status(error.status || 500)
+          .json({
+            status: error.status || 500,
+            error: error.name || "unknown error",
+            message: error.message
+          });
       });
   }
   else {
-    res.status(403);
-    res.send({
-      status: 403,
-      message: "forbidden"
-    });
+    res.status(403)
+      .json({
+        status: 403,
+        message: "forbidden"
+      });
   }
 });
 
@@ -139,6 +137,11 @@ router.post('/', (req, res) => {
 */
 router.put('/:id', (req, res) => {
   console.log("PUT: /api/user");
+  res.status(501)
+    .json({
+      status: 501,
+      error: "not implemented"
+    });
 });
 
 /**
@@ -148,6 +151,11 @@ router.put('/:id', (req, res) => {
 */
 router.delete('/:id', (req, res) => {
   console.log("DELETE: /api/user");
+  res.status(501)
+    .json({
+      status: 501,
+      error: "not implemented"
+    });
 });
 
 module.exports = router;

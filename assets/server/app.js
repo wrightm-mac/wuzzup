@@ -134,7 +134,7 @@ app.use(function(err, req, res, next) {
 
   // Don't render a view if the error is from an api call...
   if (req.fullpath.startsWith("/api/")) {
-    res.send({
+    res.json({
       status: 500,
       error: err.name || "error",
       message: err.message,

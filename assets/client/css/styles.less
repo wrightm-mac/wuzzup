@@ -81,3 +81,44 @@ h3:extend(.heading) {
 div.controls {
   margin: 20px 0 0 0;
 }
+
+
+// -------------------------------------------------------------------------- //
+
+
+section.puzzle {
+  margin: 10px 0 0 0;
+}
+
+section.puzzle + section.puzzle {
+  margin-top: 50px;
+}
+
+section.puzzle legend {
+  color: @header-color;
+  font-size: 150%;
+  font-weight: bold;
+
+  margin: 0 0 6px 0;
+  padding: 0;
+
+  border-color: @header-color;
+  border-style: solid;
+  border-width: 0 0 2px 0;
+}
+
+section.puzzle article.puzzle-blurb {
+  padding: 4px;
+  border-color: @site-backcolor;
+  border-radius: @site-border-radius;
+  border-style: solid;
+  border-width: 1px;
+
+  &:hover {
+    border-color: @header-color;
+  }
+}
+
+section.puzzle article.puzzle-blurb + article.puzzle-blurb {
+  margin-top: 16px;
+}
