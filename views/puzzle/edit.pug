@@ -91,7 +91,7 @@ block content
         }
       };
 
-      const puzzle = $.getHidden("puzzle-content");
+      const puzzle = $.getHidden("puzzle-content") || {};
       const puzzleInfo = {
         _id: puzzle._id,
         _v: puzzle._v,
@@ -117,17 +117,21 @@ block content
 
         console.log("save: data(%o)", data);
 
-        $.post(
+        $.ajax(
           {
             url: "/puzzle",
+            method: puzzleInfo.hash ? "PUT" : "POST",
             data: data
           }
         ).
         then(function(response) {
           console.info("$.post: response - %o", response);
+          puzzleInfo._id = response._id;
+          puzzleInfo._v = response._v;
+          puzzleInfo.hash = response.hash;
         })
         .catch(function(error) {
-          console.error("$.post: error - %o", error.responseJSON);
+          console.error("$.ajax: error - %o", error.responseJSON);
         });
       });
 

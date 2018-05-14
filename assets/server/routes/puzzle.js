@@ -83,9 +83,79 @@ router.get(["/play.html"], (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const puzzle = req.body;
+  const data = req.body;
 
-  console.log("POST:/puzzle(%o)", puzzle);
+  console.log("POST:/puzzle(%o)", data);
+
+  const puzzle = new puzzle.model({
+    email: req.session.user.email,
+    hash: helper.id(),
+    size: data.size,
+    name: data.name,
+    description: data.description,
+    anchors: data.anchors,
+    tags: data.tags,
+    deleted: false,
+  });
+
+  puzzle.save()
+    .then(puzzle => {
+      if (puzzle) {
+        res.json(puzzle);
+      }
+    }).
+    catch(error => {
+      helper.dumpError(error);
+      res.render("error", {
+        message: "something has gone wrong"
+      });
+    });
+});
+
+router.put("/", (req, res) => {
+  const data = req.body;
+
+  console.log("PUT:/puzzle(%o)", data);
+
+  puzzle.model.findOne({hash: data.hash || "xxxx-xxxx-xxxx"})
+    .then(puzzle => {
+      if (puzzle) {
+        puzzle.name = data.name;
+        puzzle.description = data.description;
+        puzzle.anchors = data.anchors;
+        puzzle.tags = data.tags;
+        puzzle.deleted = data.deleted || false;
+
+        puzzle.save()
+          .then(saved => {
+            res.json({
+              status: 200,
+              message: "success"
+            });
+          })
+          .catch(errorsave => {
+            helper.dumpError(errorsave);
+            res.status(500)
+              .json({
+                status: 500,
+                message: "problem whilst updating"
+              })
+          });
+      }
+      else {
+        res.status(404)
+          .json({
+            status: 404,
+            message: "puzzle not found - can't update"
+          });
+      }
+    }).
+    catch(error => {
+      helper.dumpError(error);
+      res.render("error", {
+        message: "something has gone wrong"
+      });
+    });
 });
 
 module.exports = router;
