@@ -90,11 +90,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Prevent access to 'api' if the user does not have permission...
 app.use('/api', function(req, res, next) {
     if (!(req.session.user && req.session.user.roles.includes("api"))) {
-      res.status(403);
-      res.send({
-        status: 403,
-        message: "forbidden"
-      });
+      res.status(403)
+        .json({
+          status: 403,
+          message: "forbidden"
+        });
     } else {
         next();
     }
@@ -135,7 +135,7 @@ app.use(function(err, req, res, next) {
   // Don't render a view if the error is from an api call...
   if (req.fullpath.startsWith("/api/")) {
     res.json({
-      status: 500,
+      status: status,
       error: err.name || "error",
       message: err.message,
       stack: req.app.get('env') === 'development' ? (err.stack || "").split("\n") : []

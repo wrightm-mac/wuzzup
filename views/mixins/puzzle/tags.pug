@@ -1,0 +1,7 @@
+mixin tags(name, editmode)
+
+  section.puzzle-tags
+    if editmode
+      input(id=name, type="text").puzzle-tags-edit
+    else
+      div.puzzle-tags-display

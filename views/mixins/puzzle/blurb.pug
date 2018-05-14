@@ -1,6 +1,6 @@
-mixin blurb(puzzle)
+mixin blurb(puzzle, editmode)
 
   article.puzzle-blurb
-    a(href='/puzzle/play.html?id=' + puzzle.hash)= 'Puzzle' || puzzle.name
+    a(href=`/puzzle/${editmode ? 'edit' : 'play'}.html?id=${puzzle.hash}`)= 'Puzzle' || puzzle.name
     div= puzzle.email
     div= puzzle.updatedAt

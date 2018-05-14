@@ -8,10 +8,10 @@ block content
     legend My Draft Puzzles
 
     each puzzle in puzzles
-      +blurb(puzzle)
+      +blurb(puzzle, true)
 
   section.puzzle
     legend My Published Puzzles
 
     each puzzle in puzzles
-      +blurb(puzzle)
+      +blurb(puzzle, false)

@@ -1,29 +1,137 @@
 extends ../layout
 
+include ../mixins/hidden
+include ../mixins/puzzle/board
+include ../mixins/puzzle/clues
+include ../mixins/puzzle/tags
+
 block content
-  p
-    | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum volutpat ipsum nec molestie venenatis. Curabitur tincidunt pulvinar magna sed dignissim. Curabitur mattis augue at lobortis cursus. Cras id mauris vel justo pharetra elementum. Integer eget dui id tellus cursus euismod vel vel felis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas sollicitudin, quam sed venenatis vehicula, magna sapien scelerisque urna, ac tristique tortor ipsum ut erat.
+  link(href='/css/puzzle.css', rel='stylesheet')
+  script(src="/scripts/puzzle.js")
 
+  h1  Edit Puzzle
   p
-    | Sed hendrerit egestas dignissim. Phasellus sollicitudin massa sodales, tempus lectus vel, porta purus. Nam dolor erat, maximus sit amet erat quis, lacinia finibus justo. Maecenas viverra lobortis dolor, rutrum ornare lacus faucibus at. Morbi euismod risus in nulla ornare, at condimentum magna interdum. In convallis mauris mattis, luctus neque et, rutrum dui. Duis tempor dui nulla, ac semper lectus egestas sit amet. Ut porttitor orci non libero sollicitudin, eget sollicitudin sem elementum. Fusce augue erat, rhoncus et justo a, commodo blandit eros. Donec eu massa ipsum. Cras condimentum fermentum facilisis. Etiam bibendum tristique nisl vitae laoreet. Etiam vitae ligula vitae lacus elementum egestas. Quisque eleifend auctor vulputate. Sed eget tellus ante. Nunc vestibulum mollis lorem, volutpat dictum mi egestas eu.
+    | Edit the puzzle's title, description, board, and clues.
 
-  p
-    | Quisque egestas rutrum ante quis cursus. Praesent placerat a neque id rhoncus. Nunc ultricies pellentesque nisi in pellentesque. Morbi elementum posuere nulla at molestie. Donec nulla libero, luctus bibendum faucibus vitae, fringilla quis magna. Praesent eu malesuada risus. Nulla tempus justo et tortor consectetur, scelerisque gravida odio dignissim. Vivamus quis condimentum felis. Vestibulum egestas libero at commodo faucibus. Fusce lacus risus, ullamcorper vel ipsum sed, imperdiet iaculis neque. Nullam tempus pretium quam et interdum. Suspendisse potenti.
+  h3(contenteditable, title='click to edit')#puzzle-title.puzzle-title= puzzle.name ||  "Puzzle"
+  div(contenteditable, title='click to edit')#puzzle-description.puzzle-description= puzzle.description || "Description."
 
-  p
-    | Mauris et eros et urna elementum porta quis quis metus. Maecenas tincidunt tempus interdum. Nam dictum porta mattis. Duis vel euismod elit. Praesent ac congue metus. Vivamus lobortis, quam ut fringilla viverra, mi justo iaculis ipsum, sit amet dapibus purus neque at turpis. Aliquam consequat nisl in mattis tincidunt. Nullam laoreet non metus sed accumsan. Aliquam eget vehicula libero. Praesent hendrerit lacus a velit auctor, a mollis nibh aliquet.
+  +board('edit')
 
-  p
-    | Aliquam venenatis efficitur viverra. Ut non sem nibh. Maecenas pharetra mattis diam, et consequat nisi mattis vitae. Nam eget sapien faucibus, sollicitudin velit a, maximus eros. Nunc feugiat nunc enim, at bibendum libero elementum id. Vestibulum commodo, arcu eu gravida malesuada, nibh tortor mattis augue, at egestas lorem orci vitae ipsum. Etiam volutpat porta purus non rhoncus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Phasellus vel euismod lacus, dignissim suscipit tortor. Sed leo ante, posuere a mi bibendum, vestibulum lobortis mi. Maecenas id ante orci. Quisque sit amet pellentesque nulla, interdum dictum massa.
+  +clues('editclues')
 
-  p
-    | Nulla fringilla justo ac odio blandit, finibus finibus justo varius. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum suscipit, est et finibus suscipit, est dolor iaculis diam, non molestie justo eros ac ipsum. Suspendisse potenti. Vivamus lacus nisl, rhoncus eget elit dapibus, mollis feugiat ipsum. Pellentesque euismod mollis leo, in vestibulum leo vulputate sed. Donec porta pharetra sem a lobortis.
+  +tags('edittags', true)
 
-  p
-    | Ut dapibus tellus enim, in tincidunt neque sodales non. Nullam mi lorem, dapibus ut pellentesque quis, fermentum eu mi. Nam eget vehicula tellus, vel scelerisque sapien. Integer varius velit orci, eu volutpat arcu dignissim in. Suspendisse aliquet nisl in neque dapibus, sed vulputate lacus venenatis. Nunc interdum in mi vel faucibus. Proin faucibus et magna ut commodo.
+  section.puzzle-buttons
+    div#savepuzzle.standard-button Save
 
-  p
-    | Phasellus lacinia, tellus at luctus commodo, risus dui porttitor nisl, vitae vestibulum ipsum ex vel diam. Duis eleifend felis et dui hendrerit molestie. Sed efficitur tortor nec accumsan commodo. Sed et ex sed lectus mollis condimentum. Aenean mollis quam vel varius commodo. Proin ut enim sagittis, semper nunc nec, cursus leo. Aliquam nulla ipsum, sagittis sit amet metus non, imperdiet bibendum orci. Suspendisse consectetur ligula nec nulla luctus congue. Praesent id dui justo. Cras nec lectus consectetur, vehicula augue non, iaculis elit. Suspendisse a justo eu mauris mollis volutpat quis et dui. Nam faucibus diam et quam pretium, in ultricies tortor scelerisque.
+  +hidden('puzzle-content', puzzle)
 
-  p
-    | Maecenas dictum erat at libero elementum accumsan. Aliquam finibus turpis at turpis pellentesque congue. Vestibulum at lacinia tellus. Aliquam justo mauris, egestas in tempus vel, fermentum eu felis. Pellentesque interdum vel metus ac condimentum. Nam in varius nunc, eu iaculis nisi. Maecenas a rutrum neque, et lobortis urna. Nulla cursus turpis eget efficitur tincidunt. Ut ultricies lobortis sollicitudin. Duis iaculis ante et nisi condimentum vulputate. Donec nec sem felis. Phasellus pulvinar, mauris ornare vulputate suscipit, orci risus viverra tortor, id congue elit ex ac sem.
+  script.
+    $(function() {
+      const $acrossList = $("section#editclues ul#across");
+      const $downList = $("section#editclues ul#down");
+
+      let clues = {};
+
+      $("section.clues").on("blur", "div.puzzle-list-clue", function() {
+        const $this = $(this);
+        clues[$this.closest("li").attr("data-pos")] = $this.text();
+      })
+
+      function makeAnchorId(prefix, anchor) {
+        return `${prefix}-${anchor.pos.column}-${anchor.pos.row}`;
+      }
+
+      function makeClueItem(anchor, prefix, word) {
+        const id = makeAnchorId(prefix, anchor);
+        const $item = $("<li>", {class: "puzzle-list-item"})
+                      .attr("data-number", anchor.number)
+                      .attr("data-column", anchor.pos.column)
+                      .attr("data-row", anchor.pos.row)
+                      .attr("data-pos", id)
+                      .append($("<span>", {class: "puzzle-list-anchor"}).text(anchor.number))
+                      .append($("<span>", {class: "puzzle-list-word"}).text(` [${word.text || ""}]`))
+                      .append($("<span>", {class: "puzzle-list-size"}).text(` (${word.length})`))
+                      .append($("<div>", {class: "puzzle-list-clue", title: "click to edit", contenteditable: true}).text(word.clue || "[not set]"));
+
+        return $item;
+      }
+
+      function change(event) {
+        $acrossList.empty();
+        $downList.empty();
+
+        $.each(event.anchors, function() {
+            if (this.horizontal) {
+              $acrossList.append(makeClueItem(this, "a", this.horizontal));
+            }
+            if (this.vertical) {
+              $downList.append(makeClueItem(this, "d", this.vertical));
+            }
+        });
+      }
+
+      function anchorload(anchor) {
+        if (anchor.horizontal) {
+          $acrossList.append(makeClueItem(anchor, "a", anchor.horizontal));
+        }
+        if (anchor.vertical) {
+          $downList.append(makeClueItem(anchor, "d", anchor.vertical));
+        }
+      }
+
+      const settings = {
+        editing: true,
+        events: {
+          load: change,
+          anchorload: anchorload,
+          cell: change,
+          letter: change
+        }
+      };
+
+      const puzzle = $.getHidden("puzzle-content");
+      const puzzleInfo = {
+        _id: puzzle._id,
+        _v: puzzle._v,
+        hash: puzzle.hash
+      }
+      console.log("/puzzle/edit.html(%o)", puzzle);
+
+      $("#savepuzzle").click(function() {
+        let data = $("table#edit").puzzle().contents(anchor => {
+          if (anchor.horizontal) {
+            anchor.horizontal.clue = clues[makeAnchorId("a", anchor)];
+          }
+          if (anchor.vertical) {
+            anchor.vertical.clue = clues[makeAnchorId("d", anchor)];
+          }
+        });
+
+        data = $.extend(data, puzzleInfo, {
+          name: $("#puzzle-title").text(),
+          description: $("#puzzle-description").text(),
+          tags: $("#edittags").val().split(" ")
+        });
+
+        console.log("save: data(%o)", data);
+
+        $.post(
+          {
+            url: "/puzzle",
+            data: data
+          }
+        ).
+        then(function(response) {
+          console.info("$.post: response - %o", response);
+        })
+        .catch(function(error) {
+          console.error("$.post: error - %o", error.responseJSON);
+        });
+      });
+
+      $("table#edit").puzzle(puzzle,  settings)
+        .end()
+        .fadeIn();
+    });

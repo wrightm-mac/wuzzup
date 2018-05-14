@@ -66,6 +66,7 @@ const PuzzleSchema = new mongoose.Schema({
     required: true
   },
   anchors: [],
+  tags: [String],
   publishedAt: {
     type: Date
   },

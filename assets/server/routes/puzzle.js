@@ -42,12 +42,12 @@ const puzzle = require('./models/puzzle');
 
 
 router.get(["/edit.html"], (req, res) => {
-  const hash = req.query["id"];
+  const id = req.query["id"];
 
   puzzle.model.findOne({hash: id})
-    .then(data => {
+    .then(puzzle => {
       res.render("puzzle/edit", {
-        puzzle: data
+        puzzle: puzzle
       });
     })
     .catch(error => {
@@ -63,9 +63,9 @@ router.get(["/play.html"], (req, res) => {
 
   if (id) {
     puzzle.model.findOne({hash: id})
-      .then(data => {
+      .then(puzzle => {
         res.render("puzzle/play", {
-          puzzle: data
+          puzzle: puzzle
         });
       })
       .catch(error => {
@@ -83,7 +83,9 @@ router.get(["/play.html"], (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  const puzzle = req.body;
 
+  console.log("POST:/puzzle(%o)", puzzle);
 });
 
 module.exports = router;
