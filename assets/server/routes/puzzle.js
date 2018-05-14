@@ -178,7 +178,7 @@ router.put("/", (req, res) => {
           puzzle.description = data.description;
           puzzle.anchors = data.anchors;
           puzzle.tags = data.tags;
-          puzzle.deleted = data.deleted || false;
+          puzzle.deleted = puzzle.deleted || data.deleted || false;
 
           puzzle.history.push({
             event: (data.published && (!puzzle.published)) ? "publish" : "update",
@@ -186,7 +186,7 @@ router.put("/", (req, res) => {
             date: new Date()
           });
 
-          puzzle.published = data.published;
+          puzzle.published = puzzle.published || data.published || false;
 
           puzzle.save()
             .then(saved => {
