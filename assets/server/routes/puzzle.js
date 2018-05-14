@@ -42,21 +42,29 @@ const puzzle = require('./models/puzzle');
 
 
 router.get(["/edit.html"], (req, res) => {
-  const id = req.query["id"];
-
-  if (id) {
-    puzzle.model.findOne({hash: id})
-      .then(puzzle => {
-        res.render("puzzle/edit", {
-          puzzle: puzzle
+  const user = req.session ? req.session.user : null;
+  if (user) {
+    const id = req.query["id"];
+    if (id) {
+      puzzle.model.findOne({hash: id})
+        .then(puzzle => {
+          if (puzzle && (puzzle.email === user.email)) {
+            res.render("puzzle/edit", {
+              puzzle: puzzle
+            });
+          }
+          else {
+            res.render("error", {
+              error: "not your puzzle"
+            });
+          }
+        })
+        .catch(error => {
+          helper.dumpError(error);
+          res.render("error", {
+            message: "something has gone wrong"
+          });
         });
-      })
-      .catch(error => {
-        helper.dumpError(error);
-        res.render("error", {
-          message: "something has gone wrong"
-        });
-      });
     }
     else {
       // A new puzzle...
@@ -73,6 +81,12 @@ router.get(["/edit.html"], (req, res) => {
         }
       });
     }
+  }
+  else {
+    res.render("error", {
+      error: "not logged in"
+    });
+  }
 });
 
 router.get(["/play.html"], (req, res) => {
@@ -100,79 +114,165 @@ router.get(["/play.html"], (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const data = req.body;
-
-  console.log("POST:/puzzle(%o)", data);
-
-  const created = new puzzle.model({
-    email: req.session.user.email,
-    hash: helper.id(),
-    size: data.size,
-    name: data.name,
-    description: data.description,
-    anchors: data.anchors,
-    tags: data.tags,
-    deleted: false,
-  });
-
-  created.save()
-    .then(saved => {
-      if (saved) {
-        res.json(saved);
-      }
-    }).
-    catch(error => {
-      helper.dumpError(error);
-      res.render("error", {
-        message: "something has gone wrong"
-      });
+  const user = req.session ? req.session.user : null;
+  if (user) {
+    const data = req.body;
+    const created = new puzzle.model({
+      email: user.email,
+      username: user.username,
+      hash: helper.id(),
+      size: data.size,
+      name: data.name,
+      description: data.description,
+      anchors: data.anchors,
+      tags: data.tags,
+      deleted: false,
+      history: [{
+        event: "create",
+        user: user.email,
+        date: new Date()
+      }]
     });
+
+    created.save()
+      .then(saved => {
+        if (saved) {
+          res.json({
+            status: 200,
+            hash: saved.hash,
+            message: "success"
+          });
+        }
+      }).
+      catch(error => {
+        helper.dumpError(error);
+        res.status(error.status || 500)
+          .json({
+            status: error.status || 500,
+            message: error.message || "something has gone wrong"
+          });
+      });
+  }
+  else {
+    res.status(403)
+      .json({
+        status:403,
+        message: "forbidden"
+      });
+  }
 });
 
 router.put("/", (req, res) => {
-  const data = req.body;
+  const user = req.session ? req.session.user : null;
+  if (user) {
+    const data = req.body;
+    puzzle.model.findOne({hash: data.hash || "xxxx-xxxx-xxxx"})
+      .where({email: user.email})
+      .where({deleted: false})
+      .then(puzzle => {
+        if (puzzle) {
+          puzzle.name = data.name;
+          puzzle.description = data.description;
+          puzzle.anchors = data.anchors;
+          puzzle.tags = data.tags;
+          puzzle.deleted = data.deleted || false;
+          puzzle.history.push({
+            event: "update",
+            user: user.email,
+            date: new Date()
+          });
 
-  console.log("PUT:/puzzle(%o)", data);
-
-  puzzle.model.findOne({hash: data.hash || "xxxx-xxxx-xxxx"})
-    .then(puzzle => {
-      if (puzzle) {
-        puzzle.name = data.name;
-        puzzle.description = data.description;
-        puzzle.anchors = data.anchors;
-        puzzle.tags = data.tags;
-        puzzle.deleted = data.deleted || false;
-
-        puzzle.save()
-          .then(saved => {
-            res.json({
-              status: 200,
-              message: "success"
+          puzzle.save()
+            .then(saved => {
+              res.json({
+                status: 200,
+                hash: saved.hash,
+                message: "success"
+              });
+            })
+            .catch(errorsave => {
+              helper.dumpError(errorsave);
+              res.status(500)
+                .json({
+                  status: 500,
+                  message: "problem whilst updating"
+                })
             });
-          })
-          .catch(errorsave => {
-            helper.dumpError(errorsave);
-            res.status(500)
-              .json({
-                status: 500,
-                message: "problem whilst updating"
-              })
-          });
-      }
-      else {
-        res.status(404)
+        }
+        else {
+          res.status(404)
+            .json({
+              status: 404,
+              message: "not found"
+            });
+        }
+      }).
+      catch(error => {
+        helper.dumpError(error);
+        res.status(error.status || 500)
           .json({
-            status: 404,
-            message: "puzzle not found - can't update"
+            status: error.status || 500,
+            message: error.message || "something has gone wrong"
           });
-      }
-    }).
-    catch(error => {
-      helper.dumpError(error);
-      res.render("error", {
-        message: "something has gone wrong"
       });
-    });
+  }
+  else {
+    res.status(403)
+      .json({
+        status:403,
+        message: "forbidden"
+      });
+  }
+});
+
+router.delete("/:id", (req, res) => {
+  const user = req.session ? req.session.user : null;
+  if (user) {
+    puzzle.model.findOne({hash: req.params.id})
+      .where({email: user.email})
+      .where({deleted: false})
+      .then(puzzle => {
+        if (puzzle) {
+          puzzle.deleted = true;
+          puzzle.history.push({
+            event: "delete",
+            user: user.email,
+            date: new Date()
+          });
+
+          puzzle.save()
+            .then(saved => {
+              res.json({
+                status: 200,
+                message: "success"
+              });
+            })
+            .catch(errorsave => {
+              helper.dumpError(errorsave);
+              res.status(500)
+                .json({
+                  status: 500,
+                  message: "problem whilst updating"
+                })
+            });
+        }
+      })
+      .catch(error => {
+        helper.dumpError(error);
+        res.status(error.status || 500)
+          .json({
+            status: error.status || 500,
+            message: error.message || "something has gone wrong"
+          });
+      });
+  }
+  else {
+    res.status(403)
+      .json({
+        status:403,
+        message: "forbidden"
+      });
+  }
 });
 
 module.exports = router;

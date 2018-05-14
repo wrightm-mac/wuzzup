@@ -45,10 +45,14 @@ const PuzzleSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: false,
     index: true,
     trim: true,
     lowercase: true
+  },
+  username: {
+    type: String,
+    required: true,
+    trim: true
   },
   name: {
     type: String,
@@ -74,6 +78,7 @@ const PuzzleSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
+  history: []
 }, { timestamps: true });
 
 module.exports = {
