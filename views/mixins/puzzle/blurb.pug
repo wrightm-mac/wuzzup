@@ -5,10 +5,11 @@ mixin blurb(puzzle, editmode)
       a(href=`/puzzle/${editmode ? 'edit' : 'play'}.html?id=${puzzle.hash}`).puzzle-blurb-link= puzzle.name || 'Puzzle'
     if puzzle.description
       div.puzzle-blurb-description= puzzle.description
-    div.puzzle-blurb-tags
-      each tag in puzzle.tags
-        a(href='/index.html?q=' + tag).puzzle-tags-link= tag
-        | &nbsp;
+    if puzzle.tags
+      div.puzzle-blurb-tags
+        each tag in puzzle.tags
+          a(href='/index.html?q=' + tag).puzzle-tags-link= tag
+          | &nbsp;
     div.puzzle-blurb-credits
       a(href='/user.html?u=' + puzzle.username).puzzle-blurb-username= puzzle.username
       | &nbsp;at&nbsp;
