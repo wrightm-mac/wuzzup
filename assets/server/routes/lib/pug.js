@@ -94,7 +94,17 @@ class Id {
     }
 }
 
-const dateFormat = {
+const dateformat = {
+  days: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ],
+
   shortMonths: [
     "Jan",
     "Feb",
@@ -125,6 +135,15 @@ const dateFormat = {
     "December"
   ],
 
+  shortTime: function(date) {
+    return `${date.getHours()}:${date.getMinutes()}`;
+  },
+
+  prettyDateTime: function(date) {
+    return `${this.days[date.getMonth()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`
+            + " " + this.shortTime(date);
+  },
+
   shortMonthYear: function(date) {
     return `${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`;
   },
@@ -140,5 +159,5 @@ module.exports = {
   nameFromPath,
   mapItemVisible,
   id: new Id(),
-  dateFormat
+  dateformat
 };

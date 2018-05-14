@@ -47,6 +47,7 @@ router.get(["/edit.html"], (req, res) => {
     const id = req.query["id"];
     if (id) {
       puzzle.model.findOne({hash: id})
+        .where({deleted: false})
         .then(puzzle => {
           if (puzzle && (puzzle.email === user.email)) {
             res.render("puzzle/edit", {
@@ -94,6 +95,7 @@ router.get(["/play.html"], (req, res) => {
 
   if (id) {
     puzzle.model.findOne({hash: id})
+      .where({deleted: false})
       .then(puzzle => {
         res.render("puzzle/play", {
           puzzle: puzzle
@@ -176,11 +178,14 @@ router.put("/", (req, res) => {
           puzzle.anchors = data.anchors;
           puzzle.tags = data.tags;
           puzzle.deleted = data.deleted || false;
+
           puzzle.history.push({
-            event: "update",
+            event: (data.published && (!puzzle.published)) ? "publish" : "update",
             user: user.email,
             date: new Date()
           });
+
+          puzzle.published = data.published;
 
           puzzle.save()
             .then(saved => {

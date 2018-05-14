@@ -1,8 +1,15 @@
 mixin blurb(puzzle, editmode)
 
   article.puzzle-blurb
-    a(href=`/puzzle/${editmode ? 'edit' : 'play'}.html?id=${puzzle.hash}`).puzzle-blurb-link= puzzle.name || 'Puzzle'
+    legend
+      a(href=`/puzzle/${editmode ? 'edit' : 'play'}.html?id=${puzzle.hash}`).puzzle-blurb-link= puzzle.name || 'Puzzle'
     if puzzle.description
       div.puzzle-blurb-description= puzzle.description
-    div.puzzle-blurb-username= puzzle.email
-    div.puzzle-blurb-date= puzzle.updatedAt
+    div.puzzle-blurb-tags
+      each tag in puzzle.tags
+        a(href='/index.html?q=' + tag).puzzle-tags-link= tag
+        | &nbsp;
+    div.puzzle-blurb-credits
+      a(href='/user.html?u=' + puzzle.username).puzzle-blurb-username= puzzle.username
+      | &nbsp;at&nbsp;
+      span.puzzle-blurb-date= dateformat.prettyDateTime(puzzle.updatedAt)
