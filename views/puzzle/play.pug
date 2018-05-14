@@ -3,16 +3,25 @@ extends ../layout
 include ../mixins/hidden
 include ../mixins/puzzle/board
 include ../mixins/puzzle/clues
+include ../mixins/puzzle/tags
 
 block content
   link(href='/css/puzzle.css', rel='stylesheet')
   script(src="/scripts/puzzle.js")
 
-  h1= puzzle.name ||  "Puzzle"
+  h1 Play Puzzle
+  p
+    | Play the puzzle by placing letters in the open squares.
+
+  h3= puzzle.name ||  "Puzzle"
+  if puzzle.description
+    div.puzzle-description= puzzle.description
 
   +board('play')
 
   +clues('playclues')
+
+  +tags('edittags', puzzle.tags)
 
   +hidden('puzzle-content', puzzle)
 

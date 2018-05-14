@@ -4,4 +4,6 @@ mixin tags(name, tags, editmode)
     if editmode
       input(id=name, type='text', value=(tags || []).join(" ")).puzzle-tags-edit
     else
-      div.puzzle-tags-display
+      each tag in tags
+        a(href='/index.html?q=' + tag).puzzle-tags-link= tag
+        | &nbsp;
