@@ -44,18 +44,35 @@ const puzzle = require('./models/puzzle');
 router.get(["/edit.html"], (req, res) => {
   const id = req.query["id"];
 
-  puzzle.model.findOne({hash: id})
-    .then(puzzle => {
+  if (id) {
+    puzzle.model.findOne({hash: id})
+      .then(puzzle => {
+        res.render("puzzle/edit", {
+          puzzle: puzzle
+        });
+      })
+      .catch(error => {
+        helper.dumpError(error);
+        res.render("error", {
+          message: "something has gone wrong"
+        });
+      });
+    }
+    else {
+      // A new puzzle...
       res.render("puzzle/edit", {
-        puzzle: puzzle
+        puzzle: {
+          name: "New Puzzle",
+          description: "Puzzle description.",
+          size: {
+            columns: 13,
+            rows: 13
+          },
+          anchors: [],
+          tags: []
+        }
       });
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.render("error", {
-        message: "something has gone wrong"
-      });
-    });
+    }
 });
 
 router.get(["/play.html"], (req, res) => {
@@ -87,7 +104,7 @@ router.post("/", (req, res) => {
 
   console.log("POST:/puzzle(%o)", data);
 
-  const puzzle = new puzzle.model({
+  const created = new puzzle.model({
     email: req.session.user.email,
     hash: helper.id(),
     size: data.size,
@@ -98,10 +115,10 @@ router.post("/", (req, res) => {
     deleted: false,
   });
 
-  puzzle.save()
-    .then(puzzle => {
-      if (puzzle) {
-        res.json(puzzle);
+  created.save()
+    .then(saved => {
+      if (saved) {
+        res.json(saved);
       }
     }).
     catch(error => {

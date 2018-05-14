@@ -1,7 +1,7 @@
-mixin tags(name, editmode)
+mixin tags(name, tags, editmode)
 
   section.puzzle-tags
     if editmode
-      input(id=name, type="text").puzzle-tags-edit
+      input(id=name, type='text', value=(tags || []).join(" ")).puzzle-tags-edit
     else
       div.puzzle-tags-display

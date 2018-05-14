@@ -20,7 +20,7 @@ block content
 
   +clues('editclues')
 
-  +tags('edittags', true)
+  +tags('edittags', puzzle.tags, true)
 
   section.puzzle-buttons
     div#savepuzzle.standard-button Save
@@ -36,7 +36,8 @@ block content
 
       $("section.clues").on("blur", "div.puzzle-list-clue", function() {
         const $this = $(this);
-        clues[$this.closest("li").attr("data-pos")] = $this.text();
+        const id = $this.closest("li").attr("data-pos");
+        clues[id] = $this.text();
       })
 
       function makeAnchorId(prefix, anchor) {
@@ -45,6 +46,11 @@ block content
 
       function makeClueItem(anchor, prefix, word) {
         const id = makeAnchorId(prefix, anchor);
+        const clue = word.clue || clues[id];
+        if (clue) {
+          clues[id] = clue;
+        }
+
         const $item = $("<li>", {class: "puzzle-list-item"})
                       .attr("data-number", anchor.number)
                       .attr("data-column", anchor.pos.column)
@@ -53,7 +59,7 @@ block content
                       .append($("<span>", {class: "puzzle-list-anchor"}).text(anchor.number))
                       .append($("<span>", {class: "puzzle-list-word"}).text(` [${word.text || ""}]`))
                       .append($("<span>", {class: "puzzle-list-size"}).text(` (${word.length})`))
-                      .append($("<div>", {class: "puzzle-list-clue", title: "click to edit", contenteditable: true}).text(word.clue || "[not set]"));
+                      .append($("<div>", {class: "puzzle-list-clue", title: "click to edit", contenteditable: true}).text(clue || `clue for '${word.text}'`));
 
         return $item;
       }
