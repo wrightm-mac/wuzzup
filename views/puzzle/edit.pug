@@ -29,8 +29,10 @@ block content
 
   script.
     $(function() {
+      const $grid = $("table#edit");
       const $acrossList = $("section#editclues ul#across");
       const $downList = $("section#editclues ul#down");
+      const $savebutton = $("#savepuzzle");
 
       let clues = {};
 
@@ -38,6 +40,7 @@ block content
         const $this = $(this);
         const id = $this.closest("li").attr("data-pos");
         clues[id] = $this.text();
+        $savebutton.removeClass("standard-button-disabled");
       })
 
       function makeAnchorId(prefix, anchor) {
@@ -76,6 +79,8 @@ block content
               $downList.append(makeClueItem(this, "d", this.vertical));
             }
         });
+
+        $savebutton.removeClass("standard-button-disabled");
       }
 
       function anchorload(anchor) {
@@ -87,10 +92,14 @@ block content
         }
       }
 
+      function loaded() {
+        $savebutton.addClass("standard-button-disabled");
+      }
+
       const settings = {
         editing: true,
         events: {
-          load: change,
+          load: loaded,
           anchorload: anchorload,
           cell: change,
           letter: change
@@ -102,43 +111,46 @@ block content
         hash: puzzle.hash
       };
 
-      $("#savepuzzle").click(function() {
-        let data = $("table#edit").puzzle().contents(anchor => {
-          if (anchor.horizontal) {
-            const id = makeAnchorId("a", anchor);
-            anchor.horizontal.clue = clues[id];
-          }
-          if (anchor.vertical) {
-            const id = makeAnchorId("d", anchor);
-            anchor.vertical.clue = clues[id];
-          }
-        });
+      $savebutton.click(function() {
+        if (! $savebutton.hasClass("standard-button-disabled")) {
+          let data = $grid.puzzle().contents(anchor => {
+            if (anchor.horizontal) {
+              const id = makeAnchorId("a", anchor);
+              anchor.horizontal.clue = clues[id];
+            }
+            if (anchor.vertical) {
+              const id = makeAnchorId("d", anchor);
+              anchor.vertical.clue = clues[id];
+            }
+          });
 
-        data = $.extend(data, puzzleInfo, {
-          name: $("#puzzle-title").text(),
-          description: $("#puzzle-description").text(),
-          tags: $("#edittags").val().split(" ")
-        });
+          data = $.extend(data, puzzleInfo, {
+            name: $("#puzzle-title").text(),
+            description: $("#puzzle-description").text(),
+            tags: $("#edittags").val().split(" ")
+          });
 
-        console.log("save: data(%o)", data);
+          console.log("save: data(%o)", data);
 
-        $.ajax(
-          {
-            url: "/puzzle",
-            method: puzzleInfo.hash ? "PUT" : "POST",
-            data: data
-          }
-        ).
-        then(function(response) {
-          console.info("$.ajax: success(%o)", response);
-          puzzleInfo.hash = response.hash;
-        })
-        .catch(function(error) {
-          console.error("$.ajax: error(%o)", error.responseJSON);
-        });
+          $.ajax(
+            {
+              url: "/puzzle",
+              method: puzzleInfo.hash ? "PUT" : "POST",
+              data: data
+            }
+          ).
+          then(function(response) {
+            console.info("$.ajax: success(%o)", response);
+            puzzleInfo.hash = response.hash;
+            $savebutton.addClass("standard-button-disabled");
+          })
+          .catch(function(error) {
+            console.error("$.ajax: error(%o)", error.responseJSON);
+          });
+        }
       });
 
-      $("table#edit").puzzle(puzzle,  settings)
+      $grid.puzzle(puzzle,  settings)
         .end()
         .fadeIn();
     });
