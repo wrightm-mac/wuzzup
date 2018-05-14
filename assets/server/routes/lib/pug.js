@@ -139,6 +139,10 @@ const dateformat = {
     return `${date.getHours()}:${date.getMinutes()}`;
   },
 
+  prettyDate: function(date) {
+    return `${this.days[date.getMonth()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`;
+  },
+
   prettyDateTime: function(date) {
     return `${this.days[date.getMonth()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`
             + " " + this.shortTime(date);

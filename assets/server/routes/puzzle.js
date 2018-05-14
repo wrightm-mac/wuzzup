@@ -128,6 +128,7 @@ router.post("/", (req, res) => {
       description: data.description,
       anchors: data.anchors,
       tags: data.tags,
+      published: false,
       deleted: false,
       history: [{
         event: "create",

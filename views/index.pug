@@ -4,8 +4,11 @@ include ./mixins/puzzle/blurb
 
 block content
 
+ - let displayDate = new Date();
+ - displayDate.setYear(displayDate.getFullYear() + 1);
   section.puzzle
-    legend Puzzles
-
     each puzzle in puzzles
+      if (puzzle.updatedAt.getDay() !== displayDate.getDay()) || (puzzle.updatedAt.getDate() !== displayDate.getDate()) || (puzzle.updatedAt.getFullYear() !== displayDate.getFullYear())
+        - displayDate = puzzle.updatedAt;
+        legend= dateformat.prettyDate(displayDate)
       +blurb(puzzle)

@@ -8,8 +8,8 @@ mixin blurb(puzzle, editmode)
     if puzzle.tags
       div.puzzle-blurb-tags
         each tag in puzzle.tags
-          a(href='/index.html?q=' + tag).puzzle-tags-link= tag
           | &nbsp;
+          a(href='/index.html?q=' + tag).puzzle-tags-link= tag
     div.puzzle-blurb-credits
       a(href='/user.html?u=' + puzzle.username).puzzle-blurb-username= puzzle.username
       | &nbsp;at&nbsp;
