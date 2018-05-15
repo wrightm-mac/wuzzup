@@ -75,6 +75,7 @@ const PuzzleSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
+  publishedAt: Date,
   deleted: {
     type: Boolean,
     required: true

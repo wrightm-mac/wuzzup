@@ -180,13 +180,25 @@ router.put("/", (req, res) => {
           puzzle.tags = data.tags;
           puzzle.deleted = puzzle.deleted || data.deleted || false;
 
+          const date = new Date();
           puzzle.history.push({
-            event: (data.published && (!puzzle.published)) ? "publish" : "update",
+            event: "update",
             user: user.email,
-            date: new Date()
+            date: date
           });
 
-          puzzle.published = puzzle.published || data.published || false;
+          if (data.published && (!puzzle.published)) {
+            puzzle.published = true;
+            publishedAt = date;
+            puzzle.history.push({
+              event: "publish",
+              user: user.email,
+              date: date
+            });
+          }
+          else {
+            puzzle.published = false;
+          }
 
           puzzle.save()
             .then(saved => {

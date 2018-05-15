@@ -140,12 +140,11 @@ const dateformat = {
   },
 
   prettyDate: function(date) {
-    return `${this.days[date.getMonth()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`;
+    return `${this.days[date.getDay()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`;
   },
 
   prettyDateTime: function(date) {
-    return `${this.days[date.getMonth()]} ${date.getDate()} ${this.shortMonths[date.getMonth()]} ${date.getFullYear()}`
-            + " " + this.shortTime(date);
+    return this.prettyDate(date) + " " + this.shortTime(date);
   },
 
   shortMonthYear: function(date) {
