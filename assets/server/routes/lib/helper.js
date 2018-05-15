@@ -141,7 +141,7 @@ module.exports = {
     },
 
     dumpError: function(error) {
-      console.error(chalk.red("error") + "('%s', '%s')", error.name, error.message);
-      console.error(chalk.yellow(error.stack));
+      console.error(chalk.red.bold("error") + "('%s', '%s')", error.name, error.message);
+      console.error(chalk.yellow.bold(error.stack));
     }
 };

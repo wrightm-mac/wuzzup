@@ -158,7 +158,13 @@ block content
           console.info("$.ajax: success(%o)", response);
           puzzleInfo.hash = response.hash;
           puzzleInfo.mode = response.mode;
-          $savebutton.addClass("standard-button-disabled");
+
+          if (config.published) {
+            $.redirect("/");
+          }
+          else {
+            $savebutton.addClass("standard-button-disabled");
+          }
         })
         .catch(function(error) {
           console.error("$.ajax: error(%o)", error.responseJSON);

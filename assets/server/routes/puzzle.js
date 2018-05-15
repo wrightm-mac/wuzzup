@@ -38,6 +38,8 @@ const chalk = require("chalk");
 
 const config = require('./lib/config');
 const helper = require('./lib/helper');
+const crucible = require('./lib/crucible/crucible');
+
 const puzzle = require('./models/puzzle');
 
 
@@ -47,16 +49,17 @@ router.get(["/edit.html"], (req, res) => {
     const id = req.query["id"];
     if (id) {
       puzzle.model.findOne({hash: id})
+        .where({email: user.email})
         .where({deleted: false})
         .then(puzzle => {
-          if (puzzle && (puzzle.email === user.email)) {
+          if (puzzle) {
             res.render("puzzle/edit", {
               puzzle: puzzle
             });
           }
           else {
             res.render("error", {
-              error: "not your puzzle"
+              error: "puzzle not found"
             });
           }
         })
@@ -71,6 +74,7 @@ router.get(["/edit.html"], (req, res) => {
       // A new puzzle...
       res.render("puzzle/edit", {
         puzzle: {
+          mode: "cross",
           name: "New Puzzle",
           description: "Puzzle description.",
           size: {
@@ -78,6 +82,7 @@ router.get(["/edit.html"], (req, res) => {
             rows: 13
           },
           anchors: [],
+          alphas: [],
           tags: []
         }
       });
@@ -98,33 +103,37 @@ router.get(["/play.html"], (req, res) => {
     puzzle.model.findOne({hash: id})
       .where({deleted: false})
       .then(puzzle => {
-        puzzle.plays.push({
-          user: user ? user.username : null,
-          date: new Date()
-        });
-        puzzle.save().
-        then(saved => {
-          console.log("/puzzle/play.html - updated(%o)", saved);
-        })
-        .catch(error => {
-          helper.dumpError(error);
-        });
+        if (puzzle) {
+          puzzle.plays.push({
+            user: user ? user.username : null,
+            date: new Date()
+          });
+          puzzle.save()
+            .catch(error => {
+              helper.dumpError(error);
+            });
 
-        res.render("puzzle/play", {
-          puzzle: {
-            hash: puzzle.hash,
-            email: puzzle.email,
-            username: puzzle.username,
-            mode: puzzle.mode,
-            size: puzzle.size,
-            anchors: puzzle.anchors,
-            alphas: puzzle.alphas,
-            tags: puzzle.tags,
-            published: puzzle.published,
-            publishedAt: puzzle.publishedAt,
-            updatedAt: puzzle.updatedAt
-          }
-        });
+          res.render("puzzle/play", {
+            puzzle: {
+              hash: puzzle.hash,
+              email: puzzle.email,
+              username: puzzle.username,
+              mode: puzzle.mode,
+              size: puzzle.size,
+              anchors: puzzle.anchors,
+              alphas: puzzle.alphas,
+              tags: puzzle.tags,
+              published: puzzle.published,
+              publishedAt: puzzle.publishedAt,
+              updatedAt: puzzle.updatedAt
+            }
+          });
+        }
+        else {
+          res.render("error", {
+            message: "puzzle not found"
+          });
+        }
       })
       .catch(error => {
         helper.dumpError(error);
@@ -219,13 +228,16 @@ router.put("/", (req, res) => {
           });
 
           if (data.published && (!puzzle.published)) {
-            puzzle.published = true;
+            //puzzle.published = true;  //DEBUG!!!
             puzzle.publishedAt = date;
             puzzle.history.push({
               event: "publish",
               user: user.email,
               date: date
             });
+
+            // Start the analysis...
+            crucible.enqueue(user._id, puzzle._id);
           }
           else {
             puzzle.published = false;

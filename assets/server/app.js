@@ -54,6 +54,7 @@ const puzzle = require('./routes/puzzle');
 
 const apiUser = require('./routes/api/user');
 const apiPuzzle = require('./routes/api/puzzle');
+const apiWord = require('./routes/api/word');
 
 const app = express();
 
@@ -118,6 +119,7 @@ app.use('/puzzle', puzzle);
 // The application's API handlers...
 app.use('/api/user', apiUser);
 app.use('/api/puzzle', apiPuzzle);
+app.use('/api/word', apiWord);
 
 
 // catch 404 and forward to error handler
