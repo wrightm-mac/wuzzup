@@ -4,6 +4,7 @@ include ../mixins/hidden
 include ../mixins/puzzle/board
 include ../mixins/puzzle/clues
 include ../mixins/puzzle/tags
+include ../mixins/puzzle/published
 
 block content
   link(href='/css/puzzle.css', rel='stylesheet')
@@ -20,13 +21,16 @@ block content
 
   +clues('editclues')
 
-  +tags('edittags', puzzle.tags, true)
+  +tags('edittags', puzzle.tags, ! puzzle.published)
 
-  section.puzzle-buttons
-    div.puzzle-left-buttons
-      div#publishpuzzle.standard-button Publish
-      div#deletepuzzle.standard-button Delete
-    div#savepuzzle.standard-button Save
+  if ! puzzle.published
+    section.puzzle-buttons
+      div.puzzle-left-buttons
+        div#publishpuzzle.standard-button Publish
+        div#deletepuzzle.standard-button Delete
+      div#savepuzzle.standard-button Save
+  else
+    +published(puzzle)
 
   +hidden('puzzle-content', puzzle)
 
@@ -122,12 +126,51 @@ block content
         }
       };
 
+      function save(config = {}) {
+        let data = $grid.puzzle().contents(anchor => {
+          if (anchor.horizontal) {
+            const id = makeAnchorId("a", anchor);
+            anchor.horizontal.clue = clues[id];
+          }
+          if (anchor.vertical) {
+            const id = makeAnchorId("d", anchor);
+            anchor.vertical.clue = clues[id];
+          }
+        });
+
+        data = $.extend(data, puzzleInfo, {
+          name: $("#puzzle-title").text(),
+          description: $("#puzzle-description").text(),
+          tags: $("#edittags").val().trim().split(/\s* \s*/)
+        }, config);
+
+        console.log("save: data(%o)", data);
+
+        $.ajax(
+          {
+            url: "/puzzle",
+            method: puzzleInfo.hash ? "PUT" : "POST",
+            data: data
+          }
+        ).
+        then(function(response) {
+          console.info("$.ajax: success(%o)", response);
+          puzzleInfo.hash = response.hash;
+          $savebutton.addClass("standard-button-disabled");
+        })
+        .catch(function(error) {
+          console.error("$.ajax: error(%o)", error.responseJSON);
+        });
+      }
+
       $publishbutton.click(function() {
         const title =  `Publish '${$("#puzzle-title").text()}'?`;
         const message = "This action cannot be reversed. Once published, the puzzle will be visible on the front page, will be playable by others, and the puzzle will no longer be editable. Do you want to publish this puzzle?";
         $.message.tick(title, message, ["Yes", "No"])
           .then(button => {
-            console.log("/puzzle/edit.html - publish(%s)", button);
+            if (button === "yes") {
+              save({published: true});
+            }
           });
       });
 
@@ -142,40 +185,7 @@ block content
 
       $savebutton.click(function() {
         if (! $savebutton.hasClass("standard-button-disabled")) {
-          let data = $grid.puzzle().contents(anchor => {
-            if (anchor.horizontal) {
-              const id = makeAnchorId("a", anchor);
-              anchor.horizontal.clue = clues[id];
-            }
-            if (anchor.vertical) {
-              const id = makeAnchorId("d", anchor);
-              anchor.vertical.clue = clues[id];
-            }
-          });
-
-          data = $.extend(data, puzzleInfo, {
-            name: $("#puzzle-title").text(),
-            description: $("#puzzle-description").text(),
-            tags: $("#edittags").val().trim().split(/\s* \s*/)
-          });
-
-          console.log("save: data(%o)", data);
-
-          $.ajax(
-            {
-              url: "/puzzle",
-              method: puzzleInfo.hash ? "PUT" : "POST",
-              data: data
-            }
-          ).
-          then(function(response) {
-            console.info("$.ajax: success(%o)", response);
-            puzzleInfo.hash = response.hash;
-            $savebutton.addClass("standard-button-disabled");
-          })
-          .catch(function(error) {
-            console.error("$.ajax: error(%o)", error.responseJSON);
-          });
+          save();
         }
       });
 

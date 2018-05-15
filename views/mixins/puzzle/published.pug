@@ -1,0 +1,8 @@
+mixin published(puzzle)
+
+  if puzzle.published
+    div.puzzle-publish-info
+      | published by&nbsp;
+      a(href='/user.html?u=' + puzzle.username).puzzle-blurb-username= puzzle.username
+      | &nbsp;at&nbsp;
+      span.puzzle-blurb-date= dateformat.prettyDateTime(puzzle.publishedAt)

@@ -189,7 +189,7 @@ router.put("/", (req, res) => {
 
           if (data.published && (!puzzle.published)) {
             puzzle.published = true;
-            publishedAt = date;
+            puzzle.publishedAt = date;
             puzzle.history.push({
               event: "publish",
               user: user.email,

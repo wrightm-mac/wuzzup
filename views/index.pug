@@ -8,7 +8,7 @@ block content
  - displayDate.setYear(displayDate.getFullYear() + 1);
   section.puzzle
     each puzzle in puzzles
-      if (puzzle.updatedAt.getDay() !== displayDate.getDay()) || (puzzle.updatedAt.getDate() !== displayDate.getDate()) || (puzzle.updatedAt.getFullYear() !== displayDate.getFullYear())
-        - displayDate = puzzle.updatedAt;
+      if (puzzle.publishedAt.getDay() !== displayDate.getDay()) || (puzzle.publishedAt.getDate() !== displayDate.getDate()) || (puzzle.publishedAt.getFullYear() !== displayDate.getFullYear())
+        - displayDate = puzzle.publishedAt;
         legend= dateformat.prettyDate(displayDate)
       +blurb(puzzle)

@@ -9,14 +9,26 @@ block content
     div.standard-center-panel
       a(href='/puzzle/edit.html').standard-bumper-button New Puzzle
 
-  section.puzzle
-    legend My Draft Puzzles
+  section(style='display:none;')#puzzle-drafts.puzzle
+    legend My Drafts
 
     each puzzle in puzzles
-      +blurb(puzzle, true)
+      if ! puzzle.published
+        +blurb(puzzle, true)
 
-  section.puzzle
-    legend My Published Puzzles
+  section(style='display:none;')#puzzle-published.puzzle
+    legend My Published
 
     each puzzle in puzzles
-      +blurb(puzzle, false)
+      if puzzle.published
+        +blurb(puzzle, false)
+
+  script.
+    $(function() {
+      if ($("section#puzzle-drafts article.puzzle-blurb").length) {
+        $("section#puzzle-drafts").show();
+      }
+      if ($("section#puzzle-published article.puzzle-blurb").length) {
+        $("section#puzzle-published").show();
+      }
+    });

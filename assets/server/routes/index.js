@@ -44,11 +44,12 @@ const puzzle = require('./models/puzzle');
 router.get(["/", "/index.html"], function(req, res) {
   const page = req.query["page"] || 0;
 
-  puzzle.model.find()
+  puzzle.model.find({published: true})
+    .where({deleted: false})
     .skip(page * config.settings.main.pagesize)
     .limit(config.settings.main.pagesize)
     .sort("-updatedAt")
-    .select("hash email username name description tags size updatedAt createdAt")
+    .select("hash email username name description tags size published publishedAt")
     .then(function(puzzles) {
       res.render("index", {
         puzzles: puzzles
@@ -62,6 +63,7 @@ router.get(["/", "/index.html"], function(req, res) {
 
 router.get("/create.html", function(req, res) {
   puzzle.model.find({email: req.session.user.email})
+    .where({deleted: false})
     .sort("-updatedAt")
     .then(puzzles => {
       res.render("create", {
