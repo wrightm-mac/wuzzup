@@ -55,7 +55,6 @@ module.exports = {
         path: "/index.html",
         children: [
           {path: "/", name: "puzzles"},
-          {path: "/puzzle/edit.html", name: "edit"},
           {path: "/puzzle/play.html", name: "play"}
         ]
       }, {
@@ -63,7 +62,7 @@ module.exports = {
         roles: ["user"],
         path: "/create.html",
         children: [
-          {path: "/edit.html", name: "edit"}
+          {path: "/puzzle/edit.html", name: "edit"}
         ]
       }, {
         name: "about",
