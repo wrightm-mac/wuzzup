@@ -40,10 +40,12 @@ const user = require('../..//models/user');
 const puzzle = require('../../models/puzzle');
 
 const glossary = require('./glossary');
+const words = require('./words');
 
 
 const processors = [
-  glossary
+  glossary,
+  words
 ];
 
 
@@ -55,6 +57,7 @@ function getPuzzleWords(puzzle) {
       const text = word.text.toLowerCase();
       const info = words.get(text) || {
         count: 0,
+        letters: word.letters,
         clues: []
       };
 
@@ -103,6 +106,11 @@ function process(userId, puzzleId) {
           processor.evaluate(words, user, puzzle);
         }, 0);
       }
+
+      setTimeout(function() {
+        user.save().catch(error => {helper.dumpError(error)});
+        puzzle.save().catch(error => {helper.dumpError(error)});
+      }, 0);
     })
     .catch(error => {
       helper.dumpError(error);
