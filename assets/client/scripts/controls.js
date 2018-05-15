@@ -113,41 +113,82 @@ $.extend({
 
   message: {
     basic: function(title, message, config) {
-      config = $.extend({
-        title: title,
-        width: 360,
-        buttons: ["OK"]
-    }, config);
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
 
-      $("<div>", {class: "standard-message-container"})
-        .append($("<img>", {class: "standard-message-glyph", src: `/images/dialog/${config.glyph}.png`}))
-        .append($("<div>", {class: "standard-message-text"}).html(message))
-        .dialog(config);
+      return new Promise((resolve, reject) => {
+        config = $.extend({
+          title: title,
+          width: 400,
+          buttons: ["OK"],
+          callback: function(button) {
+            resolve(button);
+          }
+        }, config);
+
+        $("<div>", {class: "standard-message-container"})
+          .append($("<img>", {class: "standard-message-glyph", src: `/images/dialog/${config.glyph}.png`}))
+          .append($("<div>", {class: "standard-message-text"}).html(message))
+          .dialog(config);
+      });
     },
 
     error: function(title, message, config = {}) {
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
       config.glyph = "error";
-      $.message.basic(title, message, config);
+
+      return $.message.basic(title, message, config);
     },
 
     ask: function(title, message, config = {}) {
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
       config.glyph = "help";
-      $.message.basic(title, message, config);
+
+      return $.message.basic(title, message, config);
     },
 
     info: function(title, message, config = {}) {
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
       config.glyph = "info";
-      $.message.basic(title, message, config);
+
+      return $.message.basic(title, message, config);
     },
 
     power: function(title, message, config = {}) {
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
       config.glyph = "power";
-      $.message.basic(title, message, config);
+
+      return $.message.basic(title, message, config);
     },
 
     tick: function(title, message, config = {}) {
+      if (Array.isArray(config)) {
+        config = {
+          buttons: config
+        };
+      }
       config.glyph = "tick";
-      $.message.basic(title, message, config);
+
+      return $.message.basic(title, message, config);
     },
   }
 });

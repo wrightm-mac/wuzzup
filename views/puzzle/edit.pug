@@ -23,9 +23,10 @@ block content
   +tags('edittags', puzzle.tags, true)
 
   section.puzzle-buttons
+    div.puzzle-left-buttons
+      div#publishpuzzle.standard-button Publish
+      div#deletepuzzle.standard-button Delete
     div#savepuzzle.standard-button Save
-    div#publishpuzzle.standard-button.standard-button-separator Publish
-    div#deletepuzzle.standard-button Delete
 
   +hidden('puzzle-content', puzzle)
 
@@ -120,6 +121,24 @@ block content
           letter: change
         }
       };
+
+      $publishbutton.click(function() {
+        const title =  `Publish '${$("#puzzle-title").text()}'?`;
+        const message = "This action cannot be reversed. Once published, the puzzle will be visible on the front page, will be playable by others, and the puzzle will no longer be editable. Do you want to publish this puzzle?";
+        $.message.tick(title, message, ["Yes", "No"])
+          .then(button => {
+            console.log("/puzzle/edit.html - publish(%s)", button);
+          });
+      });
+
+      $deletebutton.click(function() {
+        const title =  `Delete '${$("#puzzle-title").text()}'?`;
+        const message = "This action cannot be reversed, and the puzzle will no longer be available. Do you want to delete this puzzle?";
+        $.message.ask(title, message, ["Yes", "No"])
+          .then(button => {
+            console.log("/puzzle/edit.html - delete(%s)", button);
+          });
+      });
 
       $savebutton.click(function() {
         if (! $savebutton.hasClass("standard-button-disabled")) {
