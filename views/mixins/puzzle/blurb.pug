@@ -4,7 +4,7 @@ mixin blurb(puzzle, editmode)
 
   article.puzzle-blurb
     legend
-      a(href=`/puzzle/${editmode ? 'edit' : 'play'}.html?id=${puzzle.hash}`).puzzle-blurb-link= puzzle.name || 'Puzzle'
+      a(href=`/puzzle/${editmode && (!puzzle.published) ? 'edit' : 'play'}.html?id=${puzzle.hash}`).puzzle-blurb-link= puzzle.name || 'Puzzle'
 
     if puzzle.description
       div.puzzle-blurb-description= puzzle.description
