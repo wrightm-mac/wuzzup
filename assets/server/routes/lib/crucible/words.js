@@ -96,32 +96,50 @@ module.exports = {
 
     puzzle.statistics = {
       words: {
+        description: "words in puzzle",
         total: count,
         horizontal: countHorizontal,
         vertical: countVertical
       },
       letters: {
+        description: "letters in puzzle",
         total: length,
         horizontal: lengthHorizontal,
         vertical: lengthVertical
       },
       vowels: {
+        description: "vowels in puzzle",
         total: vowels,
         horizontal: vowelsHorizontal,
         vertical: vowelsVertical
       },
       consonants: {
+        description: "consonants in puzzle",
         total: consonants,
         horizontal: consonantsHorizontal,
         vertical: consonantsVertical
       },
       averages: {
-        letters: length / count,
-        vowels: vowels / count,
-        consonants: consonants / count
+        description: "average number of letters per word in puzzle",
+        total: {
+          letters: length / count,
+          vowels: vowels / count,
+          consonants: consonants / count
+        },
+        horizontal: {
+          letters: lengthHorizontal / countHorizontal,
+          vowels: vowelsHorizontal / countHorizontal,
+          consonants: consonantsHorizontal / countHorizontal
+        },
+        vertical: {
+          letters: lengthVertical / countVertical,
+          vowels: vowelsVertical / countVertical,
+          consonants: consonantsVertical / countVertical
+        },
       },
       ratios: {
         consonantsToVowels: {
+          description: "ratio of consonants to vowels in puzzle",
           total: consonants / vowels,
           horizontal: consonantsHorizontal / vowelsHorizontal,
           vertical: consonantsVertical / vowelsVertical,

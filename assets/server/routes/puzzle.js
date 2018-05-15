@@ -221,14 +221,8 @@ router.put("/", (req, res) => {
           puzzle.deleted = puzzle.deleted || data.deleted || false;
 
           const date = new Date();
-          puzzle.history.push({
-            event: "update",
-            user: user.email,
-            date: date
-          });
-
           if (data.published && (!puzzle.published)) {
-            //puzzle.published = true;  //DEBUG!!!
+            puzzle.published = true;
             puzzle.publishedAt = date;
             puzzle.history.push({
               event: "publish",
@@ -241,6 +235,11 @@ router.put("/", (req, res) => {
           }
           else {
             puzzle.published = false;
+            puzzle.history.push({
+              event: "update",
+              user: user.email,
+              date: date
+            });
           }
 
           puzzle.save()
