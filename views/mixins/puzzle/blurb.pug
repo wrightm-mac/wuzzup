@@ -1,6 +1,6 @@
 mixin blurb(puzzle, editmode)
 
-  include ./published
+  include ./credits
 
   article.puzzle-blurb
     legend
@@ -15,4 +15,4 @@ mixin blurb(puzzle, editmode)
           | &nbsp;
           a(href='/index.html?q=' + tag).puzzle-tags-link= tag
 
-    +published(puzzle)
+    +credits(puzzle)

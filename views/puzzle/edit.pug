@@ -4,7 +4,7 @@ include ../mixins/hidden
 include ../mixins/puzzle/board
 include ../mixins/puzzle/clues
 include ../mixins/puzzle/tags
-include ../mixins/puzzle/published
+include ../mixins/puzzle/credits
 
 block content
   link(href='/css/puzzle.css', rel='stylesheet')
@@ -30,7 +30,7 @@ block content
         div#deletepuzzle.standard-button Delete
       div#savepuzzle.standard-button Save
   else
-    +published(puzzle)
+    +credits(puzzle)
 
   +hidden('puzzle-content', puzzle)
 

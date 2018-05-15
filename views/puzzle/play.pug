@@ -4,7 +4,7 @@ include ../mixins/hidden
 include ../mixins/puzzle/board
 include ../mixins/puzzle/clues
 include ../mixins/puzzle/tags
-include ../mixins/puzzle/published
+include ../mixins/puzzle/credits
 
 block content
   link(href='/css/puzzle.css', rel='stylesheet')
@@ -24,7 +24,7 @@ block content
 
   +tags('edittags', puzzle.tags)
 
-  +published(puzzle)
+  +credits(puzzle)
 
   +hidden('puzzle-content', puzzle)
 

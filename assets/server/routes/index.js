@@ -49,7 +49,7 @@ router.get(["/", "/index.html"], function(req, res) {
     .skip(page * config.settings.main.pagesize)
     .limit(config.settings.main.pagesize)
     .sort("-updatedAt")
-    .select("hash email username name description tags size published publishedAt")
+    .select("hash email username name description tags size updatedAt published publishedAt")
     .then(function(puzzles) {
       res.render("index", {
         puzzles: puzzles
