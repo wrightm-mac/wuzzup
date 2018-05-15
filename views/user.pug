@@ -1,0 +1,44 @@
+extends layout
+
+include ./mixins/puzzle/blurblist
+
+block content
+
+  if req.session.user && puzzles
+    section.user-info
+      legend #{user.username}'s information
+      article
+        div
+          if user.createdAt
+            div.user-detail
+              span.user-detail-name joined :
+              | &nbsp;
+              span.user-detail-value= dateformat.prettyDateTime(user.createdAt)
+          if (allowedit) || (user.gender && user.gender.length)
+            div.user-detail
+              span.user-detail-name gender :
+              | &nbsp;
+              span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.gender
+          if (allowedit) || (user.status && user.status.length)
+            div.user-detail
+              span.user-detail-name status :
+              | &nbsp;
+              span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.status
+
+      legend The Story
+      article(contenteditable=allowedit, title=allowedit ? 'click to edit' : null)#user-bio= user.biography
+      if allowedit
+        div#saveuser.standard-button Save
+
+    +blurblist('userblurbs', puzzles)
+
+  else
+    section.user-not-loggedin
+      legend You must be logged in to view a user's details.
+
+      p
+        | If you don't already have an account, registration is quick and simple.
+        | It's free to sign up and it'll only take a minute.
+        | Then, amongst other things, you'll be able to make your own puzzles and share them with other users.
+      p
+        | So why not go for it?

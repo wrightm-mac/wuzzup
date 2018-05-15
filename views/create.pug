@@ -1,27 +1,15 @@
 extends layout
 
-include ./mixins/puzzle/blurb
+include ./mixins/puzzle/blurblist
 
 block content
 
-  section.puzzle
+  section.puzzle.puzzle-statistics
     legend My Puzzles
     div.standard-center-panel
       a(href='/puzzle/edit.html').standard-bumper-button New Puzzle
 
-  section(style='display:none;')#puzzle-drafts.puzzle
-    legend My Drafts
-
-    each puzzle in puzzles
-      if ! puzzle.published
-        +blurb(puzzle, true)
-
-  section(style='display:none;')#puzzle-published.puzzle
-    legend My Published
-
-    each puzzle in puzzles
-      if puzzle.published
-        +blurb(puzzle, false)
+  +blurblist('myblurbs', puzzles)
 
   script.
     $(function() {

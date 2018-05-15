@@ -38,6 +38,8 @@ const chalk = require("chalk");
 
 const config = require('./lib/config');
 const helper = require('./lib/helper');
+
+const dbuser = require('./models/user');
 const puzzle = require('./models/puzzle');
 
 
@@ -52,12 +54,12 @@ router.get(["/", "/index.html"], function(req, res) {
     .select("hash email username name description tags size updatedAt published publishedAt")
     .then(function(puzzles) {
       res.render("index", {
-        puzzles: puzzles
+        puzzles
       });
     })
     .catch(function(error) {
       helper.dumpError(error);
-      res.render("error", {error: error});
+      res.render("error", {error});
     });
 });
 
@@ -67,13 +69,50 @@ router.get("/create.html", function(req, res) {
     .sort("-updatedAt")
     .then(puzzles => {
       res.render("create", {
-        puzzles: puzzles
+        puzzles
       });
     })
     .catch(error => {
       helper.dumpError(error);
-      res.render("error", {error: error});
+      res.render("error", {error});
     });
+});
+
+router.get("/user.html", function(req, res) {
+  const user = req.session ? req.session.user : null;
+  if (user) {
+    const username = req.query["u"] || user.username;
+
+    const query = {
+      username: username,
+      deleted: false
+    };
+    if (username !== user.username) {
+      published: true
+    }
+
+    Promise.all([
+      dbuser.model.findOne({username: username, deleted: false})
+        .select("username createdAt gender status social"),
+      puzzle.model.find(query)
+        .limit(config.settings.main.pagesize)
+        .sort("-updatedAt")
+      ])
+      .then(([user, puzzles]) => {
+        res.render("user", {
+          puzzles,
+          user,
+          allowedit: (username === user.username)
+        });
+      })
+      .catch(error => {
+        helper.dumpError(error);
+        res.render("error", {error});
+      });
+  }
+  else {
+    res.render("user");
+  }
 });
 
 router.get("/:view.html", function(req, res) {

@@ -55,6 +55,7 @@ module.exports = {
         path: "/index.html",
         children: [
           {path: "/", name: "puzzles"},
+          {path: "/user.html", name: "user"},
           {path: "/puzzle/play.html", name: "play"}
         ]
       }, {
