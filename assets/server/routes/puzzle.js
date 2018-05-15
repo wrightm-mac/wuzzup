@@ -111,7 +111,19 @@ router.get(["/play.html"], (req, res) => {
         });
 
         res.render("puzzle/play", {
-          puzzle: puzzle
+          puzzle: {
+            hash: puzzle.hash,
+            email: puzzle.email,
+            username: puzzle.username,
+            mode: puzzle.mode,
+            size: puzzle.size,
+            anchors: puzzle.anchors,
+            alphas: puzzle.alphas,
+            tags: puzzle.tags,
+            published: puzzle.published,
+            publishedAt: puzzle.publishedAt,
+            updatedAt: puzzle.updatedAt
+          }
         });
       })
       .catch(error => {
