@@ -36,7 +36,11 @@
   cursor: default;
 }
 
-a.standard-button {
+.standard-bumper-button:extend(.standard-button) {
+  width: 90%;
+}
+
+a.standard-button, a.standard-button-disabled, a.standard-bumper-button {
   &:link {
     text-decoration: none;
   }
@@ -48,6 +52,22 @@ a.standard-button {
 
 .standard-button + .standard-button-separator {
   margin-left: 50px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+div.standard-center-panel {
+  text-align: center;
+}
+
+div.standard-left-panel {
+  text-align: left;
+}
+
+div.standard-right-panel {
+  text-align: right;
 }
 
 
