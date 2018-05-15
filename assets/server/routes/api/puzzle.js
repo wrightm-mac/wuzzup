@@ -41,7 +41,18 @@ const puzzle = require('../models/puzzle');
   Gets all puzzles.
 */
 router.get('/', function(req, res, next) {
-  puzzle.model.find()
+  const query = {
+    deleted: false,
+  };
+
+  if (req.query["published"] !== "all") {
+    query.published = true;
+  }
+  if (req.query["mode"]) {
+    query.mode = req.query["mode"];
+  }
+
+  puzzle.model.find(query)
     .then(data => {
       res.json(data);
     })
@@ -62,7 +73,19 @@ router.get('/', function(req, res, next) {
   :id - puzzle's identifier.
 */
 router.get('/:hash', (req, res) => {
-  puzzle.model.findOne({hash: req.params.hash})
+  const query = {
+    hash: req.params.hash,
+    deleted: false,
+  };
+
+  if (req.query["published"] !== "all") {
+    query.published = true;
+  }
+  if (req.query["mode"]) {
+    query.mode = req.query["mode"];
+  }
+
+  puzzle.model.findOne(query)
     .then(data => {
       if (data) {
         res.json(data);

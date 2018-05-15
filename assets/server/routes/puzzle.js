@@ -92,11 +92,24 @@ router.get(["/edit.html"], (req, res) => {
 
 router.get(["/play.html"], (req, res) => {
   const id = req.query["id"];
+  const user = req.session ? req.session.user : null;
 
   if (id) {
     puzzle.model.findOne({hash: id})
       .where({deleted: false})
       .then(puzzle => {
+        puzzle.plays.push({
+          user: user ? user.username : null,
+          date: new Date()
+        });
+        puzzle.save().
+        then(saved => {
+          console.log("/puzzle/play.html - updated(%o)", saved);
+        })
+        .catch(error => {
+          helper.dumpError(error);
+        });
+
         res.render("puzzle/play", {
           puzzle: puzzle
         });
@@ -123,12 +136,15 @@ router.post("/", (req, res) => {
       email: user.email,
       username: user.username,
       hash: helper.id(),
+      mode: "cross",
       size: data.size,
       name: data.name,
       description: data.description,
-      anchors: data.anchors,
+      anchors: data.anchors || [],
+      alpha: data.alphas || [],
       tags: data.tags,
       published: false,
+      plays: [],
       deleted: false,
       history: [{
         event: "create",
@@ -143,6 +159,7 @@ router.post("/", (req, res) => {
           res.json({
             status: 200,
             hash: saved.hash,
+            mode: saved.mode,
             message: "success"
           });
         }
@@ -174,9 +191,11 @@ router.put("/", (req, res) => {
       .where({deleted: false})
       .then(puzzle => {
         if (puzzle) {
+          puzzle.mode = data.mode || "cross";
           puzzle.name = data.name;
           puzzle.description = data.description;
-          puzzle.anchors = data.anchors;
+          puzzle.anchors = data.anchors || [];
+          puzzle.alphas = data.alphas || [];
           puzzle.tags = data.tags;
           puzzle.deleted = puzzle.deleted || data.deleted || false;
 
@@ -205,6 +224,7 @@ router.put("/", (req, res) => {
               res.json({
                 status: 200,
                 hash: saved.hash,
+                mode: saved.mode,
                 message: "success"
               });
             })

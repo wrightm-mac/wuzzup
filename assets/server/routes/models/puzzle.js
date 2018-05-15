@@ -54,6 +54,12 @@ const PuzzleSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  mode: {               // <----------- enum: "cross" || "alpha"
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
   name: {
     type: String,
     trim: true
@@ -69,13 +75,15 @@ const PuzzleSchema = new mongoose.Schema({
     },
     required: true
   },
-  anchors: [],
+  anchors: [],          // <----------- for crosswords
+  alphas: [],           // <----------- for alpha-puzzles
   tags: [String],
   published: {
     type: Boolean,
     required: true
   },
   publishedAt: Date,
+  plays: [],
   deleted: {
     type: Boolean,
     required: true

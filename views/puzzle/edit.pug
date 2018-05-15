@@ -105,7 +105,8 @@ block content
 
       const puzzle = $.getHidden("puzzle-content") || {};
       const puzzleInfo = {
-        hash: puzzle.hash
+        hash: puzzle.hash,
+        mode: puzzle.mode || "cross"
       };
 
       function loaded() {
@@ -156,6 +157,7 @@ block content
         then(function(response) {
           console.info("$.ajax: success(%o)", response);
           puzzleInfo.hash = response.hash;
+          puzzleInfo.mode = response.mode;
           $savebutton.addClass("standard-button-disabled");
         })
         .catch(function(error) {
