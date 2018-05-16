@@ -43,7 +43,10 @@ const word = require('../models/word');
   Gets all words.
 */
 router.get('/', function(req, res, next) {
-  word.model.find()
+  const search = req.query["search"];
+  const query = search ? {word: search} : null;
+
+  word.model.find(query)
     .then(data => {
       res.json(data);
     })

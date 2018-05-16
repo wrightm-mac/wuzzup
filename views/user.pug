@@ -4,37 +4,45 @@ include ./mixins/puzzle/blurblist
 
 block content
 
-  if req.session.user && puzzles
-    section.user-info
-      legend #{user.username}'s information
-      article
-        div
-          if user.createdAt
-            div.user-detail
-              span.user-detail-name joined :
-              | &nbsp;
-              span.user-detail-value= dateformat.prettyDateTime(user.createdAt)
-          if (allowedit) || (user.gender && user.gender.length)
-            div.user-detail
-              span.user-detail-name gender :
-              | &nbsp;
-              span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.gender
-          if (allowedit) || (user.status && user.status.length)
-            div.user-detail
-              span.user-detail-name status :
-              | &nbsp;
-              span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.status
+  if req.session.user
+    if user
+      section.user-info
+        legend #{user.username}'s information
+        article
+          div
+            if user.createdAt
+              div.user-detail
+                span.user-detail-name joined :
+                | &nbsp;
+                span.user-detail-value= dateformat.prettyDateTime(user.createdAt)
+            if (allowedit) || (user.gender && user.gender.length)
+              div.user-detail
+                span.user-detail-name gender :
+                | &nbsp;
+                span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.gender
+            if (allowedit) || (user.status && user.status.length)
+              div.user-detail
+                span.user-detail-name status :
+                | &nbsp;
+                span(contenteditable=allowedit, title=allowedit ? 'click to edit' : null).user-detail-value= user.status
 
-      legend The Story
-      article(contenteditable=allowedit, title=allowedit ? 'click to edit' : null)#user-bio= user.biography
+        legend The Story
+        article(contenteditable=allowedit, title=allowedit ? 'click to edit' : null)#user-bio= user.biography
 
-      if allowedit
-        div#saveuser.standard-button Save
+        if allowedit
+          div#saveuser.standard-button Save
 
-    +blurblist('userblurbs', puzzles)
+      +blurblist('userblurbs', puzzles)
+    else
+      section.user-notice
+        legend User '#{username}' not found.
+
+        p
+          | Please ensure that you have spelled the username correctly, and try again.
+
 
   else
-    section.user-not-loggedin
+    section.user-notice
       legend You must be logged in to view a user's details.
 
       p

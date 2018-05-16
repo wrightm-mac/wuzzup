@@ -2,6 +2,8 @@ mixin blurblist(name, puzzles)
 
   include ./blurb
 
+  - puzzles = puzzles || [];
+
   div(id=name).puzzle-blurblist
     if req.session.user
       section(style='display:none;')#puzzle-drafts.puzzle

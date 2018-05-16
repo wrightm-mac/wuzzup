@@ -100,6 +100,7 @@ router.get("/user.html", function(req, res) {
       ])
       .then(([user, puzzles]) => {
         res.render("user", {
+          username,
           puzzles,
           user,
           allowedit: (username === login.username)
