@@ -91,6 +91,47 @@ router.get('/:hash', (req, res) => {
     });
 });
 
+router.get('/lookup/:search', (req, res) => {
+  word.model.findOne({word: req.params.search})
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+});
+
+router.get('/puzzle/:id', (req, res) => {
+  word.model.find({"occurences": {$elemMatch: {puzzleId: req.params.id}}})
+    .then(data => {
+      res.json(data);
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+});
+
 router.post('/', (req, res) => {
   console.log("POST: /api/word");
   res.status(501)
