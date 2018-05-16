@@ -79,16 +79,16 @@ router.get("/create.html", function(req, res) {
 });
 
 router.get("/user.html", function(req, res) {
-  const user = req.session ? req.session.user : null;
-  if (user) {
-    const username = req.query["u"] || user.username;
+  const login = req.session ? req.session.user : null;
+  if (login) {
+    const username = req.query["u"] || login.username;
 
     const query = {
       username: username,
       deleted: false
     };
-    if (username !== user.username) {
-      published: true
+    if (username !== login.username) {
+      query.published = true;
     }
 
     Promise.all([
@@ -102,7 +102,7 @@ router.get("/user.html", function(req, res) {
         res.render("user", {
           puzzles,
           user,
-          allowedit: (username === user.username)
+          allowedit: (username === login.username)
         });
       })
       .catch(error => {
