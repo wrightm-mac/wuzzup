@@ -41,9 +41,7 @@ const puzzle = require('../models/puzzle');
   Gets all puzzles.
 */
 router.get('/', function(req, res, next) {
-  const query = {
-    deleted: false,
-  };
+  const query = {};
 
   if (req.query["published"] !== "all") {
     query.published = true;
@@ -51,8 +49,12 @@ router.get('/', function(req, res, next) {
   if (req.query["mode"]) {
     query.mode = req.query["mode"];
   }
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
 
   puzzle.model.find(query)
+    .select("hash username name description tags size anchors alphas history plays published publishedAt createdAt updatedAt")
     .then(data => {
       res.json(data);
     })
@@ -72,10 +74,9 @@ router.get('/', function(req, res, next) {
 
   :id - puzzle's identifier.
 */
-router.get('/:hash', (req, res) => {
+router.get('/:id', (req, res) => {
   const query = {
-    hash: req.params.hash,
-    deleted: false,
+    _id: req.params.id
   };
 
   if (req.query["published"] !== "all") {
@@ -84,8 +85,12 @@ router.get('/:hash', (req, res) => {
   if (req.query["mode"]) {
     query.mode = req.query["mode"];
   }
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
 
   puzzle.model.findOne(query)
+    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
     .then(data => {
       if (data) {
         res.json(data);

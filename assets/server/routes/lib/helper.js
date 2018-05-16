@@ -141,7 +141,12 @@ module.exports = {
     },
 
     dumpError: function(error) {
-      console.error(chalk.red.bold("error") + "('%s', '%s')", error.name, error.message);
-      console.error(chalk.yellow.bold(error.stack));
+      if (error) {
+        console.error(chalk.red.bold("error") + "('%s', '%s')", chalk.green.bold(error.name), chalk.green.bold(error.message));
+        console.error(chalk.yellow.bold(error.stack));
+      }
+      else {
+        console.error(chalk.red.bold("unknown error"));
+      }
     }
 };

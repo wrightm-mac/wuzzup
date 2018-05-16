@@ -53,7 +53,7 @@ const WordSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  occurences: []
+  occurs: []
 },
 {
   timestamps: true

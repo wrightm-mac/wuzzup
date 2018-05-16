@@ -47,6 +47,7 @@ router.get('/', function(req, res, next) {
   const query = search ? {word: search} : null;
 
   word.model.find(query)
+    .select("hash word count occurs createdAt updatedAt")
     .then(data => {
       res.json(data);
     })
@@ -66,8 +67,9 @@ router.get('/', function(req, res, next) {
 
   :id - word's identifier.
 */
-router.get('/:hash', (req, res) => {
-  word.model.findOne({hash: req.params.hash})
+router.get('/:id', (req, res) => {
+  word.model.findOne({_id: req.params.id})
+    .select("hash word count occurs createdAt updatedAt")
     .then(data => {
       if (data) {
         res.json(data);
@@ -93,6 +95,7 @@ router.get('/:hash', (req, res) => {
 
 router.get('/lookup/:search', (req, res) => {
   word.model.findOne({word: req.params.search})
+    .select("hash word count occurs createdAt updatedAt")
     .then(data => {
       if (data) {
         res.json(data);

@@ -43,13 +43,19 @@ const user = require('../models/user');
   Gets all users.
 */
 router.get('/', function(req, res) {
-  user.model.find()
-    .sort("email")
+  const query = {};
+
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
+
+  user.model.find(query)
+    .select("hash username words plays createdAt updatedAt")
     .then(users => {
       res.json(users);
     }).
     catch(error => {
-      helper.dumpError();
+      helper.dumpError(error);
       res.status(error.status || 500)
         .json({
           status: error.status || 500,
@@ -62,10 +68,19 @@ router.get('/', function(req, res) {
 /**
   Gets an identified user.
 
-  :hash - user's identifier.
+  :id - user's identifier.
 */
-router.get('/:hash', (req, res) => {
-  user.model.findOne({hash: req.params.hash})
+router.get('/:id', (req, res) => {
+  const query = {
+    _id: req.params.id
+  };
+
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
+
+  user.model.findOne(query)
+    .select("hash username words plays createdAt updatedAt")
     .then(user => {
       if (user) {
         res.json(user);
@@ -79,14 +94,53 @@ router.get('/:hash', (req, res) => {
       }
     }).
     catch(error => {
-      helper.dumpError();
+      helper.dumpError(error);
       res.status(error.status || 500)
         .json({
           status: error.status || 500,
           error: error.name || "unknown error",
           message: error.message
         });
+    });
 });
+
+/**
+  Gets a user by username.
+
+  :username - username.
+*/
+router.get('/lookup/:username', (req, res) => {
+  const query = {
+    username: req.params.username
+  };
+
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
+
+  user.model.findOne(query)
+    .select("hash username words plays createdAt updatedAt")
+    .then(user => {
+      if (user) {
+        res.json(user);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    }).
+    catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
 });
 
 /**
