@@ -1,24 +1,47 @@
 extends layout
 
 block content
+  link(href='/css/admin.css', rel='stylesheet')
   script(src="/scripts/admin.js")
 
-  dl.adminSection
-    dt(data-section='users') Users
-    dd(data-section='users')
-      table.adminTable
-        thead
-          tr
-            th.adminTableHeader ID
-            th.adminTableHeader Email
-            th.adminTableHeader Roles
-            th.adminTableHeaderBlank
+  h1 Site
+  section.admin-site
+    table.standard-table
+      //- thead
+      //-   tr
+      //-     th Name
+      //-     th Value
+      tbody
+        tr
+          td.admin-table-name Site
+          td.admin-table-value= site.title
+        tr
+          td.admin-table-name Name
+          td.admin-table-value= site.id.name
+        tr
+          td.admin-table-name ID
+          td.admin-table-value= site.id.version
+        tr
+          td.admin-table-name Hash
+          td.admin-table-value= site.hash
 
-    dt(data-section='documents') Documents
-    dd(data-section='documents')
-      table.adminTable
-        thead
+  h2 Settings
+  table.standard-table
+    tbody
+      each value, key in settings.main
+        tr
+          td.admin-table-name= key
+          td.admin-table-value= value
+
+  hr
+
+  h1 Database
+  section.admin-database
+    table.standard-table
+      tbody
+        each value, key in mongo
           tr
-            th.adminTableHeader ID
-            th.adminTableHeader Email
-            th.adminTableHeaderBlank
+            td.admin-table-name= key
+            td.admin-table-value= value
+
+  h2 Content
