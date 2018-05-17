@@ -197,7 +197,46 @@ block content
         }
       });
 
-      $grid.puzzle(puzzle,  settings)
-        .end()
-        .fadeIn();
+      if (puzzle.hash) {
+        $grid.puzzle(puzzle,  settings)
+          .end()
+          .fadeIn();
+      }
+      else {
+        function makeDialogControl(name, $control) {
+          return $("<div>", {class: "puzzle-new-control"})
+                  .append($("<label>", {class: "puzzle-new-label"}).text(name))
+                  .append($control);
+        }
+
+        $("<div>", {class: "puzzle-new-dialog"})
+          .append(makeDialogControl("Name", $("<input>", {id: "newname", type: "text", value: "New Puzzle", autofocus: true})))
+          .append(makeDialogControl("Columns", $("<input>", {id: "newcolumns", type: "range", min: 8, max: 20, value: 13})))
+          .append(makeDialogControl("Rows", $("<input>", {id: "newrows", type: "range", min: 8, max: 20, value: 13})))
+          .append(makeDialogControl("", $("<label>", {id: "newinfo", class: "puzzle-new-info"}).text("(13 columns x 13 rows))")))
+          .on("change", "input[type=range]", function() {
+            const columncount = $("input[type=range]#newcolumns").val();
+            const rowcount = $("input[type=range]#newrows").val();
+            $("label.puzzle-new-info").text(`(${columncount} columns x ${rowcount} rows)`);
+          })
+          .dialog({
+            title: "New Puzzle",
+            width: 440
+          })
+          .then(function(button) {
+            const puzzlename = $("input[type=text]#newname").val();
+            const columncount = Number.parseInt($("input[type=range]#newcolumns").val());
+            const rowcount = Number.parseInt($("input[type=range]#newrows").val());
+
+            $("#puzzle-title").text(puzzlename);
+            $grid.puzzle({
+              size: {
+                columns: columncount,
+                rows: rowcount
+              }
+            },  settings)
+              .end()
+              .fadeIn();
+          })
+      }
     });

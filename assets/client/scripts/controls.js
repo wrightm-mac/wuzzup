@@ -132,7 +132,7 @@ $.extend({
         $("<div>", {class: "standard-message-container"})
           .append($("<img>", {class: "standard-message-glyph", src: `/images/dialog/${config.glyph}.png`}))
           .append($("<div>", {class: "standard-message-text"}).html(message))
-          .dialog(config);
+          .dialograw(config);
       });
     },
 
@@ -195,12 +195,29 @@ $.extend({
 
 
 $.fn.extend({
-  dialog: function(config) {
+  dialograw: function(config) {
     const $dialog = $.showdialog(config);
     $(".standard-dialog-content", $dialog).append($(this));
     $dialog.css({
       top: `${($(window).height() - $dialog.height()) / 2}px`,
       left: `${($(window).width() - $dialog.width()) / 2}px`
+    });
+  },
+
+  dialog: function(config) {
+    return new Promise((resolve, reject) => {
+      config = $.extend(config, {
+        callback: (button) => {
+          resolve(button, $(this));
+        }
+      });
+
+      const $dialog = $.showdialog(config);
+      $(".standard-dialog-content", $dialog).append($(this));
+      $dialog.css({
+        top: `${($(window).height() - $dialog.height()) / 2}px`,
+        left: `${($(window).width() - $dialog.width()) / 2}px`
+      });
     });
   },
 
