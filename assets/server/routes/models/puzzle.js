@@ -49,6 +49,10 @@ const PuzzleSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
   username: {
     type: String,
     required: true,

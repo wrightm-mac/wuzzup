@@ -37,12 +37,8 @@ const helper = require('../lib/helper');
 const puzzle = require('../models/puzzle');
 
 
-/**
-  Gets all puzzles.
-*/
-router.get('/', function(req, res, next) {
-  const query = {};
 
+function find(req, res, query = {}) {
   if (req.query["published"] !== "all") {
     query.published = true;
   }
@@ -63,7 +59,7 @@ router.get('/', function(req, res, next) {
   }
 
   puzzle.model.find(query)
-    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
+    .select("hash userId username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
     .then(data => {
       res.json(data);
     })
@@ -76,6 +72,13 @@ router.get('/', function(req, res, next) {
           message: error.message
         });
     });
+}
+
+/**
+  Gets all puzzles.
+*/
+router.get('/', function(req, res, next) {
+  find(req, res, {});
 });
 
 /**
@@ -129,40 +132,9 @@ router.get('/:id', (req, res) => {
   :word - word.
 */
 router.get('/word/:word', (req, res) => {
-  const query = {
+  find(req, res, {
     "words.word": req.params.word
-  };
-
-  if (req.query["mode"]) {
-    query.mode = req.query["mode"];
-  }
-  if (req.query["user"]) {
-    query.username = req.query["user"];
-  }
-
-  puzzle.model.find(query)
-    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  });
 });
 
 /**
@@ -172,42 +144,10 @@ router.get('/word/:word', (req, res) => {
 
   :tag - tag.
 */
-router.get('/tag/:tag', (req, res) => {
-  const tags = req.params.tag.split("+");
-  const query = {
-    tags: {$all: tags}
-  };
-
-  if (req.query["mode"]) {
-    query.mode = req.query["mode"];
-  }
-  if (req.query["user"]) {
-    query.username = req.query["user"];
-  }
-
-  puzzle.model.find(query)
-    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+router.get('/tag/:tags', (req, res) => {
+  find(req, res, {
+    tags: {$all: req.params.tags.split("+")}
+  });
 });
 
 /**
@@ -216,63 +156,21 @@ router.get('/tag/:tag', (req, res) => {
   :username - username.
 */
 router.get('/play/:username', (req, res) => {
-  const query = {
+  find(req, res, {
     "plays.user": req.params.username
-  };
-
-  if (req.query["mode"]) {
-    query.mode = req.query["mode"];
-  }
-  if (req.query["user"]) {
-    query.username = req.query["user"];
-  }
-
-  puzzle.model.find(query)
-    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  });
 });
 
 /**
   Adds a new puzzle.
 */
 router.post('/', (req, res) => {
-  let data = req.body;
-  data.email = req.session.user.email;
-  data.hash = helper.id();
-
-  const record = new puzzle.model(data);
-  record.save()
-    .then(data => {
-      res.json(data);
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
+  console.log("POST: /api/puzzle");
+  res.status(501)
+    .json({
+      status: 501,
+      error: "not implemented",
+      message: "POST not supported"
     });
 });
 

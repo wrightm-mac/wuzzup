@@ -155,6 +155,7 @@ router.post("/", (req, res) => {
     const data = req.body;
     const created = new puzzle.model({
       email: user.email,
+      userId: user._id,
       username: user.username,
       hash: helper.id(),
       mode: "cross",
@@ -231,9 +232,6 @@ router.put("/", (req, res) => {
               user: user.username,
               date: date
             };
-
-            // Start the analysis...
-            crucible.enqueue(user._id, puzzle._id);
           }
           else {
             puzzle.published = false;
@@ -246,6 +244,9 @@ router.put("/", (req, res) => {
 
           puzzle.save()
             .then(saved => {
+              // Start the analysis...
+              crucible.enqueue(user._id, puzzle._id);
+
               res.json({
                 status: 200,
                 hash: saved.hash,
