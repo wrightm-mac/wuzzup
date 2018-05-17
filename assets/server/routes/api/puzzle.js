@@ -33,52 +33,50 @@
 ----------------------------------------------------------------------------- */
 
 const router = require('express').Router();
-const helper = require('../lib/helper');
+const query = require('../lib/query');
+
 const puzzle = require('../models/puzzle');
 
 
+const selectfields = "hash userId username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt";
 
-function find(req, res, query = {}) {
+function setCriteria(req, criteria) {
   if (req.query["published"] !== "all") {
-    query.published = true;
+    criteria.published = true;
   }
   if (req.query["mode"]) {
-    query.mode = req.query["mode"];
+    criteria.mode = req.query["mode"];
   }
   if (req.query["hash"]) {
-    query.hash = req.query["hash"];
+    criteria.hash = req.query["hash"];
   }
   if (req.query["name"]) {
-    query.name = req.query["name"];
+    criteria.name = req.query["name"];
   }
   if (req.query["user"]) {
-    query.username = req.query["user"];
+    criteria.username = req.query["user"];
   }
   if (! req.query["deleted"]) {
-    query.deleted = false;
+    criteria.deleted = false;
   }
 
-  puzzle.model.find(query)
-    .select("hash userId username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
-    .then(data => {
-      res.json(data);
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  return criteria;
 }
+
+function find(req, res, criteria = {}) {
+  query.find(puzzle.model, req, res, setCriteria(req, criteria), selectfields);
+}
+
+function findOne(req, res, criteria = {}) {
+  query.findOne(puzzle.model, req, res, setCriteria(req, criteria), selectfields);
+}
+
 
 /**
   Gets all puzzles.
 */
-router.get('/', function(req, res, next) {
-  find(req, res, {});
+router.get('/', (req, res) => {
+  find(req, res);
 });
 
 /**
@@ -87,43 +85,18 @@ router.get('/', function(req, res, next) {
   :id - puzzle's identifier.
 */
 router.get('/:id', (req, res) => {
-  const query = {
-    _id: req.params.id
-  };
+  query.findOne(req, res, {_id: req.params.id});
+});
 
-  if (req.query["published"] !== "all") {
-    query.published = true;
-  }
-  if (req.query["mode"]) {
-    query.mode = req.query["mode"];
-  }
-  if (! req.query["deleted"]) {
-    query.deleted = false;
-  }
+/**
+  Gets a puzzle by its hash.
 
-  puzzle.model.findOne(query)
-    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  :hash - hash.
+*/
+router.get('/hash/:hash', (req, res) => {
+  findOne(req, res, {
+    hash: req.params.hash
+  });
 });
 
 /**
@@ -165,13 +138,7 @@ router.get('/play/:username', (req, res) => {
   Adds a new puzzle.
 */
 router.post('/', (req, res) => {
-  console.log("POST: /api/puzzle");
-  res.status(501)
-    .json({
-      status: 501,
-      error: "not implemented",
-      message: "POST not supported"
-    });
+  query.notImplemented(res, "POST not supported");
 });
 
 /**
@@ -180,13 +147,7 @@ router.post('/', (req, res) => {
   :id - puzzle's identifier.
 */
 router.put('/:id', (req, res) => {
-  console.log("PUT: /api/puzzle");
-  res.status(501)
-    .json({
-      status: 501,
-      error: "not implemented",
-      message: "PUT not supported"
-    });
+  query.notImplemented(res, "PUT not supported");
 });
 
 /**
@@ -195,13 +156,7 @@ router.put('/:id', (req, res) => {
   :id - puzzle's identifier.
 */
 router.delete('/:id', (req, res) => {
-  console.log("DELETE: /api/puzzle");
-  res.status(501)
-    .json({
-      status: 501,
-      error: "not implemented",
-      message: "DELETE not supported"
-    });
+  query.notImplemented(res, "DELETE not supported");
 });
 
 module.exports = router;

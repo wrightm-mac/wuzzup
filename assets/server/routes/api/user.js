@@ -34,35 +34,34 @@
 
 const router = require('express').Router();
 
-const helper = require('../lib/helper');
-
+const query = require('../lib/query');
 const user = require('../models/user');
+
+
+const selectfields = "hash username words plays createdAt updatedAt";
+
+function setCriteria(req, criteria) {
+  if (! req.query["deleted"]) {
+    query.deleted = false;
+  }
+
+  return criteria;
+}
+
+function find(req, res, criteria = {}) {
+  query.find(user.model, req, res, setCriteria(req, criteria), selectfields);
+}
+
+function findOne(req, res, criteria = {}) {
+  query.findOne(user.model, req, res, setCriteria(req, criteria), selectfields);
+}
 
 
 /**
   Gets all users.
 */
 router.get('/', function(req, res) {
-  const query = {};
-
-  if (! req.query["deleted"]) {
-    query.deleted = false;
-  }
-
-  user.model.find(query)
-    .select("hash username words plays createdAt updatedAt")
-    .then(users => {
-      res.json(users);
-    }).
-    catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  find(req, res);
 });
 
 /**
@@ -71,37 +70,18 @@ router.get('/', function(req, res) {
   :id - user's identifier.
 */
 router.get('/:id', (req, res) => {
-  const query = {
-    _id: req.params.id
-  };
+  findOne(req, res, {_id: req.params.id});
+});
 
-  if (! req.query["deleted"]) {
-    query.deleted = false;
-  }
+/**
+  Gets a user by their hash.
 
-  user.model.findOne(query)
-    .select("hash username words plays createdAt updatedAt")
-    .then(user => {
-      if (user) {
-        res.json(user);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    }).
-    catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  :hash - hash.
+*/
+router.get('/hash/:hash', (req, res) => {
+  findOne(req, res, {
+    hash: req.params.hash
+  });
 });
 
 /**
@@ -110,78 +90,37 @@ router.get('/:id', (req, res) => {
   :username - username.
 */
 router.get('/lookup/:username', (req, res) => {
-  const query = {
-    username: req.params.username
-  };
+  findOne(req, res, {username: req.params.username});
+});
 
-  if (! req.query["deleted"]) {
-    query.deleted = false;
-  }
+/**
+  Gets a user by a tag that they've used.
 
-  user.model.findOne(query)
-    .select("hash username words plays createdAt updatedAt")
-    .then(user => {
-      if (user) {
-        res.json(user);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    }).
-    catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+
+  :tag- tag.
+*/
+router.get('/tag/:tags', (req, res) => {
+  find(req, res, {
+    "tags.tag": req.params.tag
+  });
+});
+
+/**
+  Gets a user by a word that they've used.
+
+  :word- word.
+*/
+router.get('/word/:words', (req, res) => {
+  find(req, res, {
+    "words.word": req.params.word
+  });
 });
 
 /**
   Adds a new user.
 */
 router.post('/', (req, res) => {
-  if (req.session.user.roles.includes("admin")) {
-    const data = req.body;
-    const newuser = new user.model({
-      username: data.username,
-      hash: helper.id(),
-      email: data.email,
-      username: data.username,
-      password: helper.hash(data.password),
-      roles: data.roles || ["user"],
-      validated: data.validated || false,
-      suspended: data.suspended || false,
-      deleted: false
-    });
-
-    newuser.save()
-      .then(user => {
-        res.json(user);
-      })
-      .catch(error => {
-        helper.dumpError(error);
-        res.status(error.status || 500)
-          .json({
-            status: error.status || 500,
-            error: error.name || "unknown error",
-            message: error.message
-          });
-      });
-  }
-  else {
-    res.status(403)
-      .json({
-        status: 403,
-        message: "forbidden"
-      });
-  }
+  query.notImplemented(res, "POST not supported");
 });
 
 /**
@@ -190,12 +129,7 @@ router.post('/', (req, res) => {
   :id - user's identifier.
 */
 router.put('/:id', (req, res) => {
-  console.log("PUT: /api/user");
-  res.status(501)
-    .json({
-      status: 501,
-      error: "not implemented"
-    });
+  query.notImplemented(res, "PUT not supported");;
 });
 
 /**
@@ -204,12 +138,7 @@ router.put('/:id', (req, res) => {
   :id - user's identifier.
 */
 router.delete('/:id', (req, res) => {
-  console.log("DELETE: /api/user");
-  res.status(501)
-    .json({
-      status: 501,
-      error: "not implemented"
-    });
+  query.notImplemented(res, "DELETE not supported");
 });
 
 module.exports = router;

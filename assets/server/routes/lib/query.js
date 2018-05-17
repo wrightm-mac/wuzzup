@@ -32,49 +32,58 @@
 
 ----------------------------------------------------------------------------- */
 
-const router = require('express').Router();
-const mongoose = require("mongoose");
-
-const query = require('../lib/query');
-const word = require('../models/word');
+const helper = require("./helper");
 
 
-const selectfields = "hash word count occurs createdAt updatedAt";
+function processError(res, error) {
+  helper.dumpError(error);
+  res.status(error.status || 500)
+    .json({
+      status: error.status || 500,
+      error: error.name || "unknown error",
+      message: error.message
+    });
+}
 
+module.exports = {
 
-router.get('/', (req, res) => {
-  const search = req.query["search"];
-  const criteria = search ? {word: search} : null;
+  find: function(model, req, res, criteria = {}, selectlist) {
+    model.find(criteria)
+    .select(selectlist)
+    .then(data => {
+      res.json(data);
+    })
+    .catch(error => {
+      processError(res, error);
+    });
+  },
 
-  query.find(word.model, req, res, criteria, selectfields);
-});
+  findOne: function(model, req, res, criteria = {}, selectlist) {
+    model.findOne(criteria)
+    .select(selectlist)
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      processError(res, error);
+    });
+  },
 
-router.get('/:id', (req, res) => {
-  query.findOne(word.model, req, res, {_id: req.params.id}, selectfields);
-});
-
-router.get('/hash/:hash', (req, res) => {
-  query.findOne(word.model, req, res, {hash: req.params.hash}, selectfields);
-});
-
-router.get('/lookup/:search', (req, res) => {
-  query.findOne(word.model, req, res, {word: req.params.search}, selectfields);
-});
-
-router.get('/puzzle/:id', (req, res) => {
-  query.find(word.model, req, res, {"occurs.puzzleId": mongoose.Schema.Types.ObjectId(req.params.id)}, selectfields);
-});
-
-router.post('/', (req, res) => {
-  query.notImplemented(res, "POST not supported");
-});
-
-router.put('/:id', (req, res) => {
-  query.notImplemented(res, "PUT not supported");
-});
-
-router.delete('/:id', (req, res) => {
-  query.notImplemented(res, "DELETE not supported");
-});
-
-module.exports = router;
+  notImplemented: function(res, message) {
+    res.status(501)
+      .json({
+        status: 501,
+        error: "not implemented",
+        message: message
+      });
+  }
+};

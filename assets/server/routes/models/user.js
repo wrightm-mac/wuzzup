@@ -65,6 +65,7 @@ var UserSchema = new mongoose.Schema({
   gender: String,
   status: String,
   social: [],
+  tags: [],
   words: [],
   plays: [],
   validated: Boolean,
