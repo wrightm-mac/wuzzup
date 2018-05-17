@@ -124,6 +124,45 @@ router.get('/:id', (req, res) => {
 });
 
 /**
+  Gets all puzzles containing word.
+
+  :word - word.
+*/
+router.get('/word/:word', (req, res) => {
+  const query = {
+    "words.word": req.params.word
+  };
+
+  if (req.query["mode"]) {
+    query.mode = req.query["mode"];
+  }
+
+  puzzle.model.find(query)
+    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+});
+
+/**
   Adds a new puzzle.
 */
 router.post('/', (req, res) => {
