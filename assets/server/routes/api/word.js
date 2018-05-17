@@ -34,18 +34,13 @@
 
 const router = require('express').Router();
 
-const helper = require('../lib/helper');
+const mongoose = require("mongoose");
 
+const helper = require('../lib/helper');
 const word = require('../models/word');
 
 
-/**
-  Gets all words.
-*/
-router.get('/', function(req, res, next) {
-  const search = req.query["search"];
-  const query = search ? {word: search} : null;
-
+function find(req, res, query = {}) {
   word.model.find(query)
     .select("hash word count occurs createdAt updatedAt")
     .then(data => {
@@ -60,6 +55,42 @@ router.get('/', function(req, res, next) {
           message: error.message
         });
     });
+}
+
+function findOne(req, res, query = {}) {
+  word.model.findOne(query)
+    .select("hash word count occurs createdAt updatedAt")
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+}
+
+/**
+  Gets all words.
+*/
+router.get('/', function(req, res, next) {
+  const search = req.query["search"];
+  const query = search ? {word: search} : null;
+
+  find(req, res, query);
 });
 
 /**
@@ -68,71 +99,21 @@ router.get('/', function(req, res, next) {
   :id - word's identifier.
 */
 router.get('/:id', (req, res) => {
-  word.model.findOne({_id: req.params.id})
-    .select("hash word count occurs createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  findOne(req, res, {
+    _id: req.params.id
+  });
 });
 
 router.get('/lookup/:search', (req, res) => {
-  word.model.findOne({word: req.params.search})
-    .select("hash word count occurs createdAt updatedAt")
-    .then(data => {
-      if (data) {
-        res.json(data);
-      }
-      else {
-        res.status(404)
-          .json({
-            status: "404",
-            message: "not found"
-          });
-      }
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  findOne(req, res, {
+    word: req.params.search
+  });
 });
 
 router.get('/puzzle/:id', (req, res) => {
-  word.model.find({"occurences": {$elemMatch: {puzzleId: req.params.id}}})
-    .then(data => {
-      res.json(data);
-    })
-    .catch(error => {
-      helper.dumpError(error);
-      res.status(error.status || 500)
-        .json({
-          status: error.status || 500,
-          error: error.name || "unknown error",
-          message: error.message
-        });
-    });
+  find(req, res, {
+    "occurs.puzzleId": mongoose.Schema.Types.ObjectId(req.params.id)
+  });
 });
 
 router.post('/', (req, res) => {
