@@ -136,6 +136,96 @@ router.get('/word/:word', (req, res) => {
   if (req.query["mode"]) {
     query.mode = req.query["mode"];
   }
+  if (req.query["user"]) {
+    query.username = req.query["user"];
+  }
+
+  puzzle.model.find(query)
+    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+});
+
+/**
+  Gets all puzzles with specific tags.
+
+  Split multiple tags with '+' eg: one+two+three. All tags must match.
+
+  :tag - tag.
+*/
+router.get('/tag/:tag', (req, res) => {
+  const tags = req.params.tag.split("+");
+  const query = {
+    tags: {$all: tags}
+  };
+
+  if (req.query["mode"]) {
+    query.mode = req.query["mode"];
+  }
+  if (req.query["user"]) {
+    query.username = req.query["user"];
+  }
+
+  puzzle.model.find(query)
+    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
+    .then(data => {
+      if (data) {
+        res.json(data);
+      }
+      else {
+        res.status(404)
+          .json({
+            status: "404",
+            message: "not found"
+          });
+      }
+    })
+    .catch(error => {
+      helper.dumpError(error);
+      res.status(error.status || 500)
+        .json({
+          status: error.status || 500,
+          error: error.name || "unknown error",
+          message: error.message
+        });
+    });
+});
+
+/**
+  Gets all puzzles played by specific user.
+
+  :username - username.
+*/
+router.get('/play/:username', (req, res) => {
+  const query = {
+    "plays.user": req.params.username
+  };
+
+  if (req.query["mode"]) {
+    query.mode = req.query["mode"];
+  }
+  if (req.query["user"]) {
+    query.username = req.query["user"];
+  }
 
   puzzle.model.find(query)
     .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
