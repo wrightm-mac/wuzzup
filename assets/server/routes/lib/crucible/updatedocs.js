@@ -34,60 +34,56 @@
 
 const helper = require('../helper');
 
+const user = require('../..//models/user');
+const puzzle = require('../..//models/puzzle');
 const word = require('../..//models/word');
 
 
 module.exports = {
 
-  name: "glossary",
-  description: "Updates the global collection of words.",
+  name: "updatedocs",
+  description: "Adds word-ids to user and puzzle documents.",
 
-  evaluate: function(words, user, puzzle) {
+  evaluate: function(words, theuser, thepuzzle) {
     return new Promise((resolve, reject) => {
-      const date = new Date();
+      word.model.find({"occurs.puzzleId": thepuzzle._id})
+        .then(dbwords => {
+          Promise.all([user.model.findById(theuser._id), puzzle.model.findById(thepuzzle._id)])
+            .then(([dbuser, dbpuzzle]) => {
+              dbpuzzle.words = [];
+              for (const dbword of dbwords) {
+                const wordindex = dbuser.words.findIndex(element => { return element.word === dbword.word });
+                if (wordindex >= 0) {
+                  const  temp = dbuser.words[wordindex];
+                  dbuser.words.splice(wordindex, 1);
+                  temp.puzzleIds.push(dbpuzzle._id);
+                  dbuser.words.push(temp);
+                }
+                else {
+                  dbuser.words.push({
+                    word: dbword.word,
+                    wordId: dbword._id,
+                    puzzleIds: [dbpuzzle._id]
+                  });
+                }
 
-      let count = 0;
-      for (const text of words.keys()) {
-        ++count;
-        word.model.findOne({word: text})
-          .then(dbword => {
-            const info = words.get(text);
+                dbpuzzle.words.push({
+                  word: dbword.word,
+                  wordId: dbword._id
+                });
+              }
 
-            if (dbword) {
-              dbword.count += info.count;
-            }
-            else {
-              dbword = new word.model({
-                hash: helper.id(),
-                word: text,
-                count: info.count,
-                occurences: []
-              });
-            }
-
-            for (const clue of info.clues) {
-              dbword.occurs.push({
-                clue: clue.clue,
-                horizontal: clue.horizontal,
-                vertical: clue.vertical,
-                userId: user._id,
-                username: user.username,
-                puzzleId: puzzle._id,
-                mode: puzzle.mode,
-                date: date
-              });
-            }
-
-            dbword.save().catch(error => { reject(error); });
-          })
-          .catch(error => {
-            reject(error);
-          });
-      }
-
-      Promise.all([user.save(), puzzle.save()])
-        .then(allsaved => {
-          resolve(`processed ${count} words`);
+              Promise.all([dbuser.save(), dbpuzzle.save()])
+                .then(saved => {
+                  resolve(`added ${dbwords.length} words`);
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            })
+            .catch(error => {
+              reject(error);
+            });
         })
         .catch(error => {
           reject(error);

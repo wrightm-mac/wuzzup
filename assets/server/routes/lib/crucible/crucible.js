@@ -41,11 +41,16 @@ const puzzle = require('../../models/puzzle');
 
 const glossary = require('./glossary');
 const words = require('./words');
+const updatedocs = require('./updatedocs');
 
 
-const processors = [
+const analysers = [
   glossary,
   words
+];
+
+const updaters = [
+  updatedocs
 ];
 
 
@@ -84,42 +89,48 @@ function getPuzzleWords(puzzle) {
   return words;
 }
 
-function process(userId, puzzleId) {
-  console.log(chalk.yellow.bold("crucible.process") + "(userId=%s, puzzleId=%s)", userId, puzzleId);
-
-  Promise.all([user.model.findById(userId), puzzle.model.findById(puzzleId)])
-    .then(([user, puzzle]) => {
-      if (! user) {
-        throw new Error(`user not found (id=${userId})`);
-      }
-      if (! puzzle) {
-        throw new Error(`puzzle not found (id=${puzzleId})`);
-      }
-
-      console.info(chalk.yellow.bold("crucible.process") + ": (user=%s, puzzle=%s)", user.email, puzzle.name);
-
-      const words = getPuzzleWords(puzzle);
-
-      for (const processor of processors) {
-        setTimeout(function() {
-          console.log(chalk.yellow.bold("crucible.processor") + "('%s', '%s')", chalk.green.bold(processor.name), chalk.green.bold(processor.description));
-          processor.evaluate(words, user, puzzle);
-        }, 0);
-      }
-
-      setTimeout(function() {
-        user.save().catch(error => {helper.dumpError(error)});
-        puzzle.save().catch(error => {helper.dumpError(error)});
-      }, 0);
+function startProcessor(processor, user, puzzle) {
+  processor.evaluate(getPuzzleWords(puzzle), user, puzzle)
+    .then(log => {
+      console.info(chalk.yellow.bold("crucible.processor") + "('%s'): done - '%s'", chalk.green.bold(processor.name), log);
     })
     .catch(error => {
+      console.error(chalk.red.bold("crucible.processor") + "('%s'): error", chalk.green.bold(processor.name));
       helper.dumpError(error);
     });
 }
 
+function runProcessorList(processorlist, userId, puzzleId) {
+  for (const processor of processorlist) {
+    console.info(chalk.yellow.bold("crucible.processor") + "('%s', '%s')", chalk.green.bold(processor.name), chalk.green.bold(processor.description));
+
+    Promise.all([user.model.findById(userId), puzzle.model.findById(puzzleId)])
+      .then(([user, puzzle]) => {
+        startProcessor(processor, user, puzzle);
+      })
+      .catch(error => {
+        helper.dumpError(error);
+      });
+  }
+}
+
+function process(userId, puzzleId) {
+  console.info(chalk.yellow.bold("crucible.process") + "(userId=%s, puzzleId=%s)", userId, puzzleId);
+
+  setTimeout(function() {
+    console.info(chalk.yellow.bold("crucible.processor") + "('" + chalk.yellow.bold("analysers") + "')");
+    runProcessorList(analysers, userId, puzzleId);
+  }, 0);
+
+  setTimeout(function() {
+    console.info(chalk.yellow.bold("crucible.processor") + "('" + chalk.yellow.bold("updaters") + "')");
+    runProcessorList(updaters, userId, puzzleId);
+  }, 10 * 1000);
+}
+
 module.exports = {
   enqueue: function(user, puzzle) {
-    console.log(chalk.yellow.bold("crucible.enqueue") + "(user=%s, puzzle=%s)", user, puzzle);
+    console.info(chalk.yellow.bold("crucible.enqueue") + "(user=%s, puzzle=%s)", user, puzzle);
 
     setTimeout(function() {
       process(user, puzzle);

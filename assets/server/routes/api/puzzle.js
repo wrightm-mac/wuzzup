@@ -49,12 +49,21 @@ router.get('/', function(req, res, next) {
   if (req.query["mode"]) {
     query.mode = req.query["mode"];
   }
+  if (req.query["hash"]) {
+    query.hash = req.query["hash"];
+  }
+  if (req.query["name"]) {
+    query.name = req.query["name"];
+  }
+  if (req.query["user"]) {
+    query.username = req.query["user"];
+  }
   if (! req.query["deleted"]) {
     query.deleted = false;
   }
 
   puzzle.model.find(query)
-    .select("hash username name description tags size anchors alphas history plays published publishedAt createdAt updatedAt")
+    .select("hash username name description tags size anchors alphas words history plays published publishedAt createdAt updatedAt")
     .then(data => {
       res.json(data);
     })

@@ -43,115 +43,125 @@ module.exports = {
   description: "Analyses a puzzle's words.",
 
   evaluate: function(words, user, puzzle) {
-    let count = 0;
-    let countHorizontal = 0;
-    let countVertical = 0;
-    let length = 0;
-    let lengthHorizontal = 0;
-    let lengthVertical = 0;
-    let vowels = 0;
-    let vowelsHorizontal = 0;
-    let vowelsVertical = 0;
-    let consonants = 0;
-    let consonantsHorizontal = 0;
-    let consonantsVertical = 0;
+    return new Promise((resolve, reject) => {
+      let count = 0;
+      let countHorizontal = 0;
+      let countVertical = 0;
+      let length = 0;
+      let lengthHorizontal = 0;
+      let lengthVertical = 0;
+      let vowels = 0;
+      let vowelsHorizontal = 0;
+      let vowelsVertical = 0;
+      let consonants = 0;
+      let consonantsHorizontal = 0;
+      let consonantsVertical = 0;
 
-    for (const word of words.keys()) {
-      const info = words.get(word);
+      for (const word of words.keys()) {
+        const info = words.get(word);
 
-      ++count;
-      length += word.length;
+        ++count;
+        length += word.length;
 
-      let wordVowels = 0;
-      let wordConsonants = 0;
-      for (const letter of info.letters) {
-        if (letter) {
-          if (["A", "E", "I", "O", "U"].indexOf(letter) >= 0) {
-            ++wordVowels;
+        let wordVowels = 0;
+        let wordConsonants = 0;
+        for (const letter of info.letters) {
+          if (letter) {
+            if (["A", "E", "I", "O", "U"].indexOf(letter) >= 0) {
+              ++wordVowels;
+            }
+            else {
+              ++wordConsonants;
+            }
           }
-          else {
-            ++wordConsonants;
+        }
+
+        for (const clue of info.clues) {
+          if (clue.horizontal) {
+            lengthHorizontal += word.length;
+            ++countHorizontal;
+            vowelsHorizontal += wordVowels;
+            consonantsHorizontal += wordConsonants;
+          }
+          if (clue.vertical) {
+            lengthVertical += word.length;
+            ++countVertical;
+            vowelsVertical += wordVowels;
+            consonantsVertical += wordConsonants;
           }
         }
+
+        vowels += wordVowels;
+        consonants += wordConsonants;
       }
 
-      for (const clue of info.clues) {
-        if (clue.horizontal) {
-          lengthHorizontal += word.length;
-          ++countHorizontal;
-          vowelsHorizontal += wordVowels;
-          consonantsHorizontal += wordConsonants;
-        }
-        if (clue.vertical) {
-          lengthVertical += word.length;
-          ++countVertical;
-          vowelsVertical += wordVowels;
-          consonantsVertical += wordConsonants;
-        }
-      }
-
-      vowels += wordVowels;
-      consonants += wordConsonants;
-    }
-
-    puzzle.statistics = {
-      words: {
-        description: "words in puzzle",
-        total: count,
-        horizontal: countHorizontal,
-        vertical: countVertical
-      },
-      letters: {
-        description: "letters in puzzle",
-        total: length,
-        horizontal: lengthHorizontal,
-        vertical: lengthVertical
-      },
-      vowels: {
-        description: "vowels in puzzle",
-        total: vowels,
-        horizontal: vowelsHorizontal,
-        vertical: vowelsVertical
-      },
-      consonants: {
-        description: "consonants in puzzle",
-        total: consonants,
-        horizontal: consonantsHorizontal,
-        vertical: consonantsVertical
-      },
-      averages: {
-        description: "average number of letters per word in puzzle",
-        total: {
-          letters: length / count,
-          vowels: vowels / count,
-          consonants: consonants / count
+      puzzle.statistics = {
+        words: {
+          description: "words in puzzle",
+          total: count,
+          horizontal: countHorizontal,
+          vertical: countVertical
         },
-        horizontal: {
-          letters: lengthHorizontal / countHorizontal,
-          vowels: vowelsHorizontal / countHorizontal,
-          consonants: consonantsHorizontal / countHorizontal
+        letters: {
+          description: "letters in puzzle",
+          total: length,
+          horizontal: lengthHorizontal,
+          vertical: lengthVertical
         },
-        vertical: {
-          letters: lengthVertical / countVertical,
-          vowels: vowelsVertical / countVertical,
-          consonants: consonantsVertical / countVertical
+        vowels: {
+          description: "vowels in puzzle",
+          total: vowels,
+          horizontal: vowelsHorizontal,
+          vertical: vowelsVertical
         },
-      },
-      ratios: {
-        consonantsToVowels: {
-          description: "ratio of consonants to vowels in puzzle",
-          total: consonants / vowels,
-          horizontal: consonantsHorizontal / vowelsHorizontal,
-          vertical: consonantsVertical / vowelsVertical,
+        consonants: {
+          description: "consonants in puzzle",
+          total: consonants,
+          horizontal: consonantsHorizontal,
+          vertical: consonantsVertical
+        },
+        averages: {
+          description: "average number of letters per word in puzzle",
+          total: {
+            letters: length / count,
+            vowels: vowels / count,
+            consonants: consonants / count
+          },
+          horizontal: {
+            letters: lengthHorizontal / countHorizontal,
+            vowels: vowelsHorizontal / countHorizontal,
+            consonants: consonantsHorizontal / countHorizontal
+          },
+          vertical: {
+            letters: lengthVertical / countVertical,
+            vowels: vowelsVertical / countVertical,
+            consonants: consonantsVertical / countVertical
+          },
+        },
+        ratios: {
+          consonantsToVowels: {
+            description: "ratio of consonants to vowels in puzzle",
+            total: consonants / vowels,
+            horizontal: consonantsHorizontal / vowelsHorizontal,
+            vertical: consonantsVertical / vowelsVertical,
+          }
         }
-      }
-    };
+      };
 
-    puzzle.history.push({
-      event: "statistics",
-      user: "crucible",
-      auto: true,
-      date: new Date()
+      puzzle.history.push({
+        event: "statistics",
+        user: "crucible",
+        auto: true,
+        date: new Date()
+      });
+
+      puzzle.save()
+        .then(saved => {
+            resolve(`processed ${count} words`);
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   }
 };

@@ -164,6 +164,7 @@ router.post("/", (req, res) => {
       anchors: data.anchors || [],
       alpha: data.alphas || [],
       tags: data.tags,
+      words: [],
       published: false,
       plays: [],
       deleted: false,
@@ -218,17 +219,18 @@ router.put("/", (req, res) => {
           puzzle.anchors = data.anchors || [];
           puzzle.alphas = data.alphas || [];
           puzzle.tags = data.tags;
+          puzzle.words = [];
           puzzle.deleted = puzzle.deleted || data.deleted || false;
 
           const date = new Date();
           if (data.published && (!puzzle.published)) {
             puzzle.published = true;
             puzzle.publishedAt = date;
-            puzzle.history.push({
+            puzzle.history ={
               event: "publish",
-              user: user.email,
+              user: user.username,
               date: date
-            });
+            };
 
             // Start the analysis...
             crucible.enqueue(user._id, puzzle._id);
