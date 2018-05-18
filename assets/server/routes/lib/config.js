@@ -40,7 +40,7 @@ module.exports = {
       title: "wuzzup",
       id: {
           name: "wuzzup.com",
-          version: 0.1,
+          version: 0.2,
       },
 
       get hash() {
