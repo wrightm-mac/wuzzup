@@ -35,6 +35,44 @@
 var mongoose = require("mongoose");
 
 
+const PuzzleAnchorContentSchema = new mongoose.Schema({
+  length: {
+    type: Number,
+    required: true
+  },
+  letters: {
+    type: [String],
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  },
+  clue: String
+});
+
+const PuzzleAnchorSchema = new mongoose.Schema({
+  number: {
+    type: Number,
+    required: true
+  },
+  pos: {
+    type: {
+      column: {
+        type: Number,
+        required: true
+      },
+      row: {
+        type: Number,
+        required: true
+      }
+    },
+    required: true
+  },
+  vertical: PuzzleAnchorContentSchema,
+  horizontal: PuzzleAnchorContentSchema
+});
+
 const PuzzleSchema = new mongoose.Schema({
   hash: {
     type: String,
@@ -58,7 +96,7 @@ const PuzzleSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  mode: {               // <----------- enum: "cross" || "alpha"
+  mode: {                             // <----------- enum: "cross" || "alpha"
     type: String,
     required: true,
     trim: true,
@@ -79,22 +117,66 @@ const PuzzleSchema = new mongoose.Schema({
     },
     required: true
   },
-  anchors: [],          // <----------- for crosswords
-  alphas: [],           // <----------- for alpha-puzzles
+  anchors: [PuzzleAnchorSchema],      // <----------- for crosswords
+  alphas: [],                         // <----------- for alpha-puzzles
   tags: [String],
   published: {
     type: Boolean,
     required: true
   },
   publishedAt: Date,
-  plays: [],
-  words: [],
+  plays: [{
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      index: true,
+      required: true
+    },
+    username: {
+      type: String,
+      index: true,
+      required: true
+    },
+    date: {
+      type: Date,
+      required: true
+    }
+  }],
+  words: [{
+    wordId: {
+      type: mongoose.Schema.Types.ObjectId,
+      index: true,
+      required: true
+    },
+    word: {
+      type: String,
+      index: true,
+      required: true
+    }
+  }],
   statistics: {},
   deleted: {
     type: Boolean,
     required: true
   },
-  history: []
+  history: [{
+    event: {
+      type: String,
+      required: true
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: false
+    },
+    username: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: Date,
+      required: true
+    },
+    auto: Boolean
+  }]
 }, { timestamps: true });
 
 module.exports = {

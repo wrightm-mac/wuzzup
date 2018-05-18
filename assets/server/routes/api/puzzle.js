@@ -85,7 +85,7 @@ router.get('/', (req, res) => {
   :id - puzzle's identifier.
 */
 router.get('/:id', (req, res) => {
-  query.findOne(req, res, {_id: req.params.id});
+  findOne(req, res, {_id: req.params.id});
 });
 
 /**

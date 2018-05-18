@@ -35,6 +35,36 @@
 const mongoose = require("mongoose");
 
 
+const WordOccursSchema = new mongoose.Schema({
+  mode: {
+    type: String,
+    required: true,
+    index: true
+  },
+  username: {
+    type: String,
+    required: true,
+    index: true
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    index: true
+  },
+  puzzleId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    index: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  clue: String,
+  horizontal: Boolean,
+  vertical: Boolean
+});
+
 const WordSchema = new mongoose.Schema({
   hash: {
     type: String,
@@ -53,7 +83,7 @@ const WordSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  occurs: []
+  occurs: [WordOccursSchema]
 },
 {
   timestamps: true

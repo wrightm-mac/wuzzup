@@ -150,7 +150,7 @@ module.exports = {
 
       puzzle.history.push({
         event: "statistics",
-        user: "crucible",
+        username: "crucible",
         auto: true,
         date: new Date()
       });

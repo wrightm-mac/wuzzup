@@ -105,10 +105,14 @@ router.get(["/play.html"], (req, res) => {
       .where({deleted: false})
       .then(puzzle => {
         if (puzzle) {
-          puzzle.plays.push({
-            user: user ? user.username : null,
-            date: new Date()
-          });
+          if (user) {
+            puzzle.plays.push({
+              userId: user._id,
+              username: user.username,
+              date: new Date()
+            });
+          }
+
           puzzle.save()
             .catch(error => {
               helper.dumpError(error);
@@ -171,7 +175,8 @@ router.post("/", (req, res) => {
       deleted: false,
       history: [{
         event: "create",
-        user: user.email,
+        userId: user._id,
+        username: user.email,
         date: new Date()
       }]
     });
@@ -224,28 +229,32 @@ router.put("/", (req, res) => {
           puzzle.deleted = puzzle.deleted || data.deleted || false;
 
           const date = new Date();
+          const history = {
+            event: "update",
+            userId: user._id,
+            username: user.username,
+            date: date
+          };
+
           if (data.published && (!puzzle.published)) {
             puzzle.published = true;
             puzzle.publishedAt = date;
-            puzzle.history ={
-              event: "publish",
-              user: user.username,
-              date: date
-            };
+            history.event = "publish";
           }
           else {
             puzzle.published = false;
-            puzzle.history.push({
-              event: "update",
-              user: user.email,
-              date: date
-            });
           }
+
+          puzzle.history.push(history);
+
+          console.log("**** history(%o)", puzzle.history);
 
           puzzle.save()
             .then(saved => {
               // Start the analysis...
-              crucible.enqueue(user._id, puzzle._id);
+              if (saved.published) {
+                crucible.enqueue(user._id, puzzle._id);
+              }
 
               res.json({
                 status: 200,
