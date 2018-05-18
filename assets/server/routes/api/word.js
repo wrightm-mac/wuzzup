@@ -33,7 +33,6 @@
 ----------------------------------------------------------------------------- */
 
 const router = require('express').Router();
-const mongoose = require("mongoose");
 
 const query = require('../lib/query');
 const word = require('../models/word');
@@ -49,6 +48,10 @@ router.get('/', (req, res) => {
   query.find(word.model, req, res, criteria, selectfields);
 });
 
+router.get('/user/:username', (req, res) => {
+  query.find(word.model, req, res, {"occurs.username": req.params.username}, selectfields);
+});
+
 router.get('/:id', (req, res) => {
   query.findOne(word.model, req, res, {_id: req.params.id}, selectfields);
 });
@@ -62,7 +65,9 @@ router.get('/lookup/:search', (req, res) => {
 });
 
 router.get('/puzzle/:id', (req, res) => {
-  query.find(word.model, req, res, {"occurs.puzzleId": mongoose.Schema.Types.ObjectId(req.params.id)}, selectfields);
+  query.find(word.model, req, res, {
+    "occurs.puzzleId": req.params.id
+  }, selectfields);
 });
 
 router.post('/', (req, res) => {
