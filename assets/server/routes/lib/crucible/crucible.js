@@ -40,6 +40,8 @@ const user = require('../..//models/user');
 const puzzle = require('../../models/puzzle');
 
 const glossary = require('./glossary');
+const anchors = require('./anchors');
+const letters = require('./letters');
 const words = require('./words');
 const updatedocs = require('./updatedocs');
 

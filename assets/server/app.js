@@ -47,10 +47,10 @@ const pug = require('./routes/lib/pug');
 const sha = require('./routes/lib/hash/sha');
 const session = require('./routes/lib/session');
 
-const fragments = require('./routes/fragments');
 const index = require('./routes/index');
 const login = require('./routes/login');
 const puzzle = require('./routes/puzzle');
+const admin = require('./routes/admin');
 
 const apiUser = require('./routes/api/user');
 const apiPuzzle = require('./routes/api/puzzle');
@@ -115,6 +115,7 @@ app.use(function(req, res, next) {
 app.use('/', index);
 app.use('/login', login);
 app.use('/puzzle', puzzle);
+app.use('/admin', admin);
 
 // The application's API handlers...
 app.use('/api/user', apiUser);

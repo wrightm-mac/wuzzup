@@ -44,4 +44,35 @@ block content
             td.admin-table-name= key
             td.admin-table-value= value
 
+  h2 Tasks
+  section.admin-database
+    div.standard-button#admin-republish Republish
+    span &nbsp;
+    span Resets statistics for all published puzzles.
+
   h2 Content
+
+    script.
+      $(function() {
+        $("#admin-republish").click(function() {
+          const title = "Republish All?"
+          const message = "'Republishing All' will reset all statistics & rebuild them using information contained in published puzzles. Are you sure that you want to do this?";
+          $.message.power(title, message, ["Yes", "No"])
+            .then(button => {
+              if (button === "yes") {
+                console.log("*** we're off to the races!");
+
+                $.post({
+                  url: "/admin/publish"
+                })
+                .then(data => {
+                  console.info("/admin/publish(%o)", data);
+                })
+                .catch(error => {
+
+                })
+              }
+            })
+            .catch();
+        });
+      });
