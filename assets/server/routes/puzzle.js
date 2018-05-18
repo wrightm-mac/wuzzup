@@ -49,6 +49,7 @@ router.get(["/edit.html"], (req, res) => {
     const id = req.query["id"];
     if (id) {
       puzzle.model.findOne({hash: id})
+        .select("hash username name description anchors alphas tags published publishedAt createdAt updatedAt")
         .where({email: user.email})
         .where({deleted: false})
         .then(puzzle => {
@@ -116,7 +117,6 @@ router.get(["/play.html"], (req, res) => {
           res.render("puzzle/play", {
             puzzle: {
               hash: puzzle.hash,
-              email: puzzle.email,
               username: puzzle.username,
               mode: puzzle.mode,
               size: puzzle.size,
