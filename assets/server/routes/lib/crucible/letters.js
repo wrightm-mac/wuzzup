@@ -39,14 +39,11 @@ const word = require('../..//models/word');
 
 module.exports = {
 
-  name: "words",
-  description: "Analyses a puzzle's words.",
+  name: "letters",
+  description: "Analyses a puzzle's letters.",
 
   evaluate: function(words, user, puzzle) {
     return new Promise((resolve, reject) => {
-      let count = 0;
-      let countHorizontal = 0;
-      let countVertical = 0;
       let length = 0;
       let lengthHorizontal = 0;
       let lengthVertical = 0;
@@ -56,25 +53,29 @@ module.exports = {
       let consonants = 0;
       let consonantsHorizontal = 0;
       let consonantsVertical = 0;
-      let lengths = [];
-      let lengthsHorizontal = [];
-      let lengthsVertical = [];
+      let frequency= {};
+      let frequencyVowel= {};
+      let frequencyConsonant= {};
+      let frequencyHorizontal = {};
+      let frequencyVertical = {};
 
       for (const word of words.keys()) {
         const info = words.get(word);
 
-        ++count;
-        lengths[word.length] += 1;
         length += word.length;
 
         let wordVowels = 0;
         let wordConsonants = 0;
         for (const letter of info.letters) {
           if (letter) {
+            frequency[letter] = (frequency[letter] || 0) + 1;
+
             if (["A", "E", "I", "O", "U"].indexOf(letter) >= 0) {
+              frequencyVowel[letter] = (frequencyVowel[letter] || 0) + 1;
               ++wordVowels;
             }
             else {
+              frequencyConsonant[letter] = (frequencyConsonant[letter] || 0) + 1;
               ++wordConsonants;
             }
           }
@@ -82,16 +83,12 @@ module.exports = {
 
         for (const clue of info.clues) {
           if (clue.horizontal) {
-            lengthsHorizontal[word.length] += 1;
             lengthHorizontal += word.length;
-            ++countHorizontal;
             vowelsHorizontal += wordVowels;
             consonantsHorizontal += wordConsonants;
           }
           if (clue.vertical) {
-            lengthsVertical[word.length] += 1;
             lengthVertical += word.length;
-            ++countVertical;
             vowelsVertical += wordVowels;
             consonantsVertical += wordConsonants;
           }
@@ -103,39 +100,37 @@ module.exports = {
 
       puzzle.statistics = puzzle.statistics || {};
 
-      puzzle.statistics.words = {
-        description: "words in puzzle",
-        total: count,
-        horizontal: countHorizontal,
-        vertical: countVertical,
-        lengths: {
-          total: lengths,
-          horizontal: lengthsHorizontal,
-          vertical: lengthsVertical
+      puzzle.statistics.letters = {
+        description: "letters in puzzle",
+        possible: puzzle.size.rows * puzzle.size.columns,
+        total: length,
+        horizontal: lengthHorizontal,
+        vertical: lengthVertical,
+        vowels: {
+          description: "vowels in puzzle",
+          total: vowels,
+          horizontal: vowelsHorizontal,
+          vertical: vowelsVertical
         },
-        averages: {
-          description: "average number of letters per word in puzzle",
-          total: {
-            letters: length / count,
-            vowels: vowels / count,
-            consonants: consonants / count
-          },
-          horizontal: {
-            letters: lengthHorizontal / countHorizontal,
-            vowels: vowelsHorizontal / countHorizontal,
-            consonants: consonantsHorizontal / countHorizontal
-          },
-          vertical: {
-            letters: lengthVertical / countVertical,
-            vowels: vowelsVertical / countVertical,
-            consonants: consonantsVertical / countVertical
-          },
+        consonants: {
+          description: "consonants in puzzle",
+          total: consonants,
+          horizontal: consonantsHorizontal,
+          vertical: consonantsVertical
+        },
+        ratios: {
+          consonantsToVowels: {
+            description: "ratio of consonants to vowels in puzzle",
+            total: consonants / vowels,
+            horizontal: consonantsHorizontal / vowelsHorizontal,
+            vertical: consonantsVertical / vowelsVertical,
+          }
         }
       };
 
       puzzle.history.push({
         event: "statistics",
-        subevent: "puzzle words",
+        subevent: "puzzle letters",
         username: "crucible",
         auto: true,
         date: new Date()
@@ -143,7 +138,7 @@ module.exports = {
 
       puzzle.save()
         .then(saved => {
-            resolve(`processed ${count} words`);
+            resolve(`processed ${length} letters`);
         })
         .catch(error => {
           reject(error);

@@ -69,8 +69,8 @@ const PuzzleAnchorSchema = new mongoose.Schema({
     },
     required: true
   },
-  vertical: PuzzleAnchorContentSchema,
-  horizontal: PuzzleAnchorContentSchema
+  horizontal: PuzzleAnchorContentSchema,
+  vertical: PuzzleAnchorContentSchema
 });
 
 const PuzzleSchema = new mongoose.Schema({
@@ -153,7 +153,11 @@ const PuzzleSchema = new mongoose.Schema({
       required: true
     }
   }],
-  statistics: {},
+  statistics: {
+    anchors: {},
+    words: {},
+    letters: {}
+  },
   deleted: {
     type: Boolean,
     required: true
@@ -175,7 +179,8 @@ const PuzzleSchema = new mongoose.Schema({
       type: Date,
       required: true
     },
-    auto: Boolean
+    auto: Boolean,
+    subevent: String
   }]
 }, { timestamps: true });
 

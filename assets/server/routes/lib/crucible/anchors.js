@@ -39,103 +39,55 @@ const word = require('../..//models/word');
 
 module.exports = {
 
-  name: "words",
-  description: "Analyses a puzzle's words.",
+  name: "anchors",
+  description: "Analyses a puzzle's anchors.",
 
   evaluate: function(words, user, puzzle) {
     return new Promise((resolve, reject) => {
+
       let count = 0;
       let countHorizontal = 0;
       let countVertical = 0;
-      let length = 0;
-      let lengthHorizontal = 0;
-      let lengthVertical = 0;
-      let vowels = 0;
-      let vowelsHorizontal = 0;
-      let vowelsVertical = 0;
-      let consonants = 0;
-      let consonantsHorizontal = 0;
-      let consonantsVertical = 0;
-      let lengths = [];
-      let lengthsHorizontal = [];
-      let lengthsVertical = [];
+      let countBoth = 0;
+      let lengths = {};
+      let lengthsHorizontal = {};
+      let lengthsVertical = {};
 
-      for (const word of words.keys()) {
-        const info = words.get(word);
-
+      for (const anchor of puzzle.anchors) {
         ++count;
-        lengths[word.length] += 1;
-        length += word.length;
 
-        let wordVowels = 0;
-        let wordConsonants = 0;
-        for (const letter of info.letters) {
-          if (letter) {
-            if (["A", "E", "I", "O", "U"].indexOf(letter) >= 0) {
-              ++wordVowels;
-            }
-            else {
-              ++wordConsonants;
-            }
-          }
+        lengths[anchor.length] = (lengths[anchor.length] || 0) + 1;
+
+        if (anchor.horizontal) {
+          ++countHorizontal;
+          lengthsHorizontal[anchor.length] = (lengthsHorizontal[anchor.length] || 0) + 1;
         }
-
-        for (const clue of info.clues) {
-          if (clue.horizontal) {
-            lengthsHorizontal[word.length] += 1;
-            lengthHorizontal += word.length;
-            ++countHorizontal;
-            vowelsHorizontal += wordVowels;
-            consonantsHorizontal += wordConsonants;
-          }
-          if (clue.vertical) {
-            lengthsVertical[word.length] += 1;
-            lengthVertical += word.length;
-            ++countVertical;
-            vowelsVertical += wordVowels;
-            consonantsVertical += wordConsonants;
-          }
+        if (anchor.vertical) {
+          ++countVertical;
         }
-
-        vowels += wordVowels;
-        consonants += wordConsonants;
+        if (anchor.horizontal &&anchor.vertical) {
+          ++countBoth;
+          lengthsVertical[anchor.length] = (lengthsVertical[anchor.length] || 0) + 1;
+        }
       }
 
       puzzle.statistics = puzzle.statistics || {};
 
-      puzzle.statistics.words = {
-        description: "words in puzzle",
+      puzzle.statistics.anchors = {
         total: count,
         horizontal: countHorizontal,
         vertical: countVertical,
+        both: countBoth,
         lengths: {
           total: lengths,
           horizontal: lengthsHorizontal,
           vertical: lengthsVertical
-        },
-        averages: {
-          description: "average number of letters per word in puzzle",
-          total: {
-            letters: length / count,
-            vowels: vowels / count,
-            consonants: consonants / count
-          },
-          horizontal: {
-            letters: lengthHorizontal / countHorizontal,
-            vowels: vowelsHorizontal / countHorizontal,
-            consonants: consonantsHorizontal / countHorizontal
-          },
-          vertical: {
-            letters: lengthVertical / countVertical,
-            vowels: vowelsVertical / countVertical,
-            consonants: consonantsVertical / countVertical
-          },
         }
       };
 
       puzzle.history.push({
         event: "statistics",
-        subevent: "puzzle words",
+        subevent: "puzzle anchors",
         username: "crucible",
         auto: true,
         date: new Date()
@@ -143,7 +95,7 @@ module.exports = {
 
       puzzle.save()
         .then(saved => {
-            resolve(`processed ${count} words`);
+            resolve(`processed ${length} letters`);
         })
         .catch(error => {
           reject(error);

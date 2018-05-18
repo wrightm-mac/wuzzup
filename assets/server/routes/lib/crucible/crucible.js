@@ -46,7 +46,9 @@ const updatedocs = require('./updatedocs');
 
 const analysers = [
   glossary,
-  words
+  anchors,
+  words,
+  letters
 ];
 
 const updaters = [
